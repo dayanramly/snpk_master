@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>SNPK - Sistem Nasional Pemantauan Kekerasan</title>
+	<link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+	<nav class="navbar navbar-default nav-header">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#default-header" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="index.html">
+					<img src="{{ url_for('static', filename='img/snpk_logo_white.png') }}">
+					<h2>Sistem Nasional Pemantauan Kekerasan</h2>
+				</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="default-header">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="logout.html">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container snpk-selection">
+		<div class="row">
+			<div class="col-md-12">	
+				<h3 class="text-center">Seleksi Data</h3>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 selection-wrapper">
+				<form action="{{ url_for('show_selection') }}" method="post">
+
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 1
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option >All</option>
+								<option>Level 1 - Tahun</option>
+								<option>Level 2 - Bulan</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 2
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form" id="dimensi2_key" name="dimensi2_key">
+								<option value="all">All</option>
+								<option value="provinsi">Level 1 - Provinsi</option>
+								<option value="kabupaten">Level 2 - Kabupaten</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form" id="dimensi2_val" name="dimensi2">
+								<option value="all">All Objects</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 3
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Level 1 - Jenis Aktor</option>
+								<option>Level 2 - Jenis Aktor</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 4
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Level 1 - Dampak Keseluruhan</option>
+								<option>Level 2 - Dampak Terhadap Perempuan</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 5
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Level 1 - Penjelasan Senjata</option>
+								<option>Level 2 - Jenis Senjata</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 6
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Jenis Kekerasan</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 7
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Level 1 - Kategori Tipe Kekerasan</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 8
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Level 1 - Bentuk Kekerasan</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<div class="checkbox">
+								<label>
+									<input type="checkbox" name="filename">
+									Dimensi 9
+								</label>
+							</div>
+						</div>
+						<div class="col-md-4">
+							<select class="form-control select-form">
+								<option>All</option>
+								<option>Level 1 -  Meta Jenis Kekerasan</option>
+							</select>
+						</div>
+						<div class="col-md-5">
+							<select class="form-control select-form">
+								<option>All Objects</option>
+								<option>2</option>
+								<option>3</option>
+								<option>4</option>
+								<option>5</option>
+							</select>
+						</div>
+					</div>
+
+					<input type="submit">
+				</form>
+
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3 selection-wrapper selection-wrapper-minsup">
+				<div class="row selection-minsup-header">
+					<div class="col-md-12">
+						<h4>MinSup dan MinConf</h4>
+					</div>
+				</div>
+				<div class="row selection-minsup">
+					<div class="col-md-2">
+						<p>Level 1</p>
+					</div>
+					<div class="col-md-5">
+						<span>MinSup</span>
+						<input type="text" class="form-control">
+					</div>
+					<div class="col-md-5">
+						<span>MinConf</span>
+						<input type="text" class="form-control">
+					</div>
+				</div>
+				<div class="row selection-minsup">
+					<div class="col-md-2">
+						<p>Level 2</p>
+					</div>
+					<div class="col-md-5">
+						<span>MinSup</span>
+						<input type="text" class="form-control">
+					</div>
+					<div class="col-md-5">
+						<span>MinConf</span>
+						<input type="text" class="form-control">
+					</div>
+				</div>
+				<div class="row selection-minsup">
+					<div class="col-md-2">
+						<p>Level 3</p>
+					</div>
+					<div class="col-md-5">
+						<span>MinSup</span>
+						<input type="text" class="form-control">
+					</div>
+					<div class="col-md-5">
+						<span>MinConf</span>
+						<input type="text" class="form-control">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-8 col-md-offset-2 selection-wrapper text-center">
+				<button class="btn btn-green btn-normal" type="submit">
+					Next
+					<i class="ion-arrow-right-c"></i>
+				</button>
+			</div>
+		</div>
+	</div>
+
+	<!-- footer section -->
+	<footer class="dd-footer">
+
+	</footer>
+
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
+	<script type="text/javascript">
+		$(function () {
+			var data = {{ rows | safe }}
+			console.log(data)
+
+			$("#dimensi2_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">All</option>'
+					$("#dimensi2_val").html(opt)
+				}
+
+				if ($(this).val() === 'provinsi') {
+					var provinsi_opt = '<option value="all">All</option>';
+					for (var i = 0, len = data.provinsi.length; i < len; i++) {
+						provinsi_opt = provinsi_opt + '<option value="'+ data.provinsi[i] +'">'+ data.provinsi[i] +'</option>'
+					}
+
+					console.log(provinsi_opt);
+					$("#dimensi2_val").html(provinsi_opt)
+				}
+
+				if ($(this).val() === 'kabupaten') {
+					var kabupaten_opt = '<option value="all">All</option>';
+					for (var i = 0, len = data.kabupaten.length; i < len; i++) {
+						kabupaten_opt = kabupaten_opt + '<option value="'+ data.kabupaten[i] +'">'+ data.kabupaten[i] +'</option>'
+					}
+
+					console.log(kabupaten_opt);
+					$("#dimensi2_val").html(kabupaten_opt)
+				}
+
+			});
+		});
+	</script>
+</body>
+</html>

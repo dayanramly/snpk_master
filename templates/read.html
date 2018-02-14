@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Read</title>
+</head>
+<body>
+<a href="{{ url_for('main') }}">Home</a>
+
+<h4>Content</h4>
+{% for row in rows %}
+    <p>{{ row }}</p>
+{% endfor %}
+</body>
+</html>

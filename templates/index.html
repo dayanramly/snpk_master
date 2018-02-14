@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>SNPK - Sistem Nasional Pemantauan Kekerasan</title>
+	<link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+	<nav class="navbar navbar-default nav-header">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#default-header" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="index.html">
+					<img src="{{ url_for('static', filename='img/snpk_logo_white.png') }}">
+					<h2>Sistem Nasional Pemantauan Kekerasan</h2>
+				</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="default-header">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="logout.html">Logout</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<div class="table-responsive show-table">
+					{{ snpkframe|safe }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- footer section -->
+	<footer class="dd-footer">
+
+	</footer>
+
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
+	<script type="text/javascript">
+		$(document).ready(function(){
+			$('.table-data').dataTable({
+			    "bPaginate": true,
+			    "bLengthChange": true,
+			    "bStateSave": true,
+			    "sScrollY": 400,
+			    "sScrollX": 1000,
+			    "aLengthMenu": [[25, 50, 100, 250, 500, 1000, -1], [25, 50, 100, 250, 500, 1000, "All"]],
+			    "iDisplayLength": 100,
+			});
+		});
+	</script>
+</body>
+</html>
