@@ -399,9 +399,10 @@ input:focus, textarea:focus {
   padding-right: 15px;
   font-weight: 600;
   color: #555555;
+  vertical-align: middle;
 }
-.snpk-selection .selection-wrapper .row.selection-minsup .col-md-5 input{
-
+.snpk-selection .selection-wrapper .row.selection-minsup .col-md-5 .form-group{
+  margin-bottom: 0;
 }
 .snpk-selection .selection-wrapper .row.selection-minsup .col-md-5 span,
 .snpk-selection .selection-wrapper .row.selection-minsup .col-md-5 input{

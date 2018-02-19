@@ -37,9 +37,10 @@
 				<h3 class="text-center">Seleksi Data</h3>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2 selection-wrapper">
-				<form action="{{ url_for('show_selection') }}" method="post">
+		<form action="{{ url_for('show_selection') }}" method="post">
+
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 selection-wrapper">
 
 					<div class="row">
 						<div class="col-md-3">
@@ -51,19 +52,15 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option >All</option>
-								<option>Level 1 - Tahun</option>
-								<option>Level 2 - Bulan</option>
+							<select class="form-control select-form" id="dimensi1_key" name="dimensi1_key">
+								<option value="all">Semua Level</option>
+								<option value="tahun">Level 1 - Tahun</option>
+								<option value="bulan">Level 2 - Bulan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi1_val" name="dimensi1">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -78,14 +75,14 @@
 						</div>
 						<div class="col-md-4">
 							<select class="form-control select-form" id="dimensi2_key" name="dimensi2_key">
-								<option value="all">All</option>
+								<option value="all">Semua Level</option>
 								<option value="provinsi">Level 1 - Provinsi</option>
 								<option value="kabupaten">Level 2 - Kabupaten</option>
 							</select>
 						</div>
 						<div class="col-md-5">
 							<select class="form-control select-form" id="dimensi2_val" name="dimensi2">
-								<option value="all">All Objects</option>
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -99,19 +96,15 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
-								<option>Level 1 - Jenis Aktor</option>
-								<option>Level 2 - Jenis Aktor</option>
+							<select class="form-control select-form" id="dimensi3_key" name="dimensi3_key">
+								<option value="all">Semua Level</option>
+								<option value="actor1">Level 1 - Jenis Aktor</option>
+								<option value="actor2">Level 2 - Jenis Aktor</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi3_val" name="dimensi3">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -125,19 +118,15 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
+							<select class="form-control select-form" id="dimensi4_key" name="dimensi4_key">
+								<option value="all">Semua Level</option>
 								<option>Level 1 - Dampak Keseluruhan</option>
 								<option>Level 2 - Dampak Terhadap Perempuan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi4_val" name="dimensi4">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -151,19 +140,15 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
-								<option>Level 1 - Penjelasan Senjata</option>
-								<option>Level 2 - Jenis Senjata</option>
+							<select class="form-control select-form" id="dimensi5_key" name="dimensi5_key">
+								<option value="all">Semua Level</option>
+								<option value="weapon_1">Level 1 - Jenis Senjata 1</option>
+								<option value="weapon_2">Level 2 - Jenis Senjata 2</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi5_val" name="dimensi5">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -177,18 +162,14 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
-								<option>Jenis Kekerasan</option>
+							<select class="form-control select-form" id="dimensi6_key" name="dimensi6_key">
+								<option value="all">Semua Level</option>
+								<option value="jenis_kek">Level 1 - Jenis Kekerasan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi6_val" name="dimensi6">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -202,18 +183,14 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
-								<option>Level 1 - Kategori Tipe Kekerasan</option>
+							<select class="form-control select-form" id="dimensi7_key" name="dimensi7_key">
+								<option value="all">Semua Level</option>
+								<option value="tp_kek">Level 1 - Kategori Tipe Kekerasan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi7_val" name="dimensi7">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -227,18 +204,14 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
-								<option>Level 1 - Bentuk Kekerasan</option>
+							<select class="form-control select-form" id="dimensi8_key" name="dimensi8_key">
+								<option value="all">Semua Level</option>
+								<option value="ben_kek">Level 1 - Bentuk Kekerasan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi8_val" name="dimensi8">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
@@ -252,83 +225,108 @@
 							</div>
 						</div>
 						<div class="col-md-4">
-							<select class="form-control select-form">
-								<option>All</option>
-								<option>Level 1 -  Meta Jenis Kekerasan</option>
+							<select class="form-control select-form" id="dimensi9_key" name="dimensi9_key">
+								<option value="all">Semua Level</option>
+								<option value="meta_kek">Level 1 -  Meta Jenis Kekerasan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
-							<select class="form-control select-form">
-								<option>All Objects</option>
-								<option>2</option>
-								<option>3</option>
-								<option>4</option>
-								<option>5</option>
+							<select class="form-control select-form" id="dimensi9_val" name="dimensi9">
+								<option value="all">Semua Objek</option>
 							</select>
 						</div>
 					</div>
 
-					<input type="submit">
-				</form>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3 selection-wrapper selection-wrapper-minsup">
+					<div class="row selection-minsup-header">
+						<div class="col-md-12">
+							<h4>MinSup dan MinConf</h4>
+						</div>
+					</div>
+					<div class="row selection-minsup">
+						<div class="col-md-2">
+							<p>Level 1</p>
+						</div>
+						<div class="col-md-5">
+							<span>MinSup</span>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control" id="minsup-1" name="minsup-1">
+									<div class="input-group-addon">%</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<span>MinConf</span>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control" id="minconf-1" name="minconf-1">
+									<div class="input-group-addon">%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row selection-minsup">
+						<div class="col-md-2">
+							<p>Level 2</p>
+						</div>
+						<div class="col-md-5">
+							<span>MinSup</span>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control" id="minsup-2" name="minsup-2">
+									<div class="input-group-addon">%</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<span>MinConf</span>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control" id="minconf-2" name="minconf-2">
+									<div class="input-group-addon">%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row selection-minsup">
+						<div class="col-md-2">
+							<p>Level 3</p>
+						</div>
+						<div class="col-md-5">
+							<span>MinSup</span>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control" id="minsup-3" name="minsup-3">
+									<div class="input-group-addon">%</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-5">
+							<span>MinConf</span>
+							<div class="form-group">
+								<div class="input-group">
+									<input type="text" class="form-control" id="minconf-3" name="minconf-3">
+									<div class="input-group-addon">%</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-8 col-md-offset-2 selection-wrapper text-center">
+					<button class="btn btn-green btn-normal" type="submit">
+						Next
+						<i class="ion-arrow-right-c"></i>
+					</button>
+				</div>
+			</div>
+		</form>
 
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-6 col-md-offset-3 selection-wrapper selection-wrapper-minsup">
-				<div class="row selection-minsup-header">
-					<div class="col-md-12">
-						<h4>MinSup dan MinConf</h4>
-					</div>
-				</div>
-				<div class="row selection-minsup">
-					<div class="col-md-2">
-						<p>Level 1</p>
-					</div>
-					<div class="col-md-5">
-						<span>MinSup</span>
-						<input type="text" class="form-control">
-					</div>
-					<div class="col-md-5">
-						<span>MinConf</span>
-						<input type="text" class="form-control">
-					</div>
-				</div>
-				<div class="row selection-minsup">
-					<div class="col-md-2">
-						<p>Level 2</p>
-					</div>
-					<div class="col-md-5">
-						<span>MinSup</span>
-						<input type="text" class="form-control">
-					</div>
-					<div class="col-md-5">
-						<span>MinConf</span>
-						<input type="text" class="form-control">
-					</div>
-				</div>
-				<div class="row selection-minsup">
-					<div class="col-md-2">
-						<p>Level 3</p>
-					</div>
-					<div class="col-md-5">
-						<span>MinSup</span>
-						<input type="text" class="form-control">
-					</div>
-					<div class="col-md-5">
-						<span>MinConf</span>
-						<input type="text" class="form-control">
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<div class="col-md-8 col-md-offset-2 selection-wrapper text-center">
-				<button class="btn btn-green btn-normal" type="submit">
-					Next
-					<i class="ion-arrow-right-c"></i>
-				</button>
-			</div>
-		</div>
 	</div>
 
 	<!-- footer section -->
@@ -342,14 +340,43 @@
 			var data = {{ rows | safe }}
 			console.log(data)
 
+			// dimensi1
+			$("#dimensi1_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi1_val").html(opt)
+				}
+
+				if ($(this).val() === 'tahun') {
+					var tahun_opt = '<option value="all">Semua Tahun</option>';
+					for (var i = 0, len = data.tahun.length; i < len; i++) {
+						tahun_opt = tahun_opt + '<option value="'+ data.tahun[i] +'">'+ data.tahun[i] +'</option>'
+					}
+
+					console.log(tahun_opt);
+					$("#dimensi1_val").html(tahun_opt)
+				}
+
+				if ($(this).val() === 'bulan') {
+					var bulan_opt = '<option value="all">Semua Bulan</option>';
+					for (var i = 0, len = data.bulan.length; i < len; i++) {
+						bulan_opt = bulan_opt + '<option value="'+ data.bulan_val[i] +'">'+ data.bulan[i] +'</option>'
+					}
+
+					console.log(bulan_opt);
+					$("#dimensi1_val").html(bulan_opt)
+				}
+
+			});
+			// dimensi2
 			$("#dimensi2_key").change(function () {
 				if ($(this).val() === 'all') {
-					var opt = '<option value="all">All</option>'
+					var opt = '<option value="all">Semua Objek</option>'
 					$("#dimensi2_val").html(opt)
 				}
 
 				if ($(this).val() === 'provinsi') {
-					var provinsi_opt = '<option value="all">All</option>';
+					var provinsi_opt = '<option value="all">Semua Provinsi</option>';
 					for (var i = 0, len = data.provinsi.length; i < len; i++) {
 						provinsi_opt = provinsi_opt + '<option value="'+ data.provinsi[i] +'">'+ data.provinsi[i] +'</option>'
 					}
@@ -359,7 +386,7 @@
 				}
 
 				if ($(this).val() === 'kabupaten') {
-					var kabupaten_opt = '<option value="all">All</option>';
+					var kabupaten_opt = '<option value="all">Semua Kabupaten</option>';
 					for (var i = 0, len = data.kabupaten.length; i < len; i++) {
 						kabupaten_opt = kabupaten_opt + '<option value="'+ data.kabupaten[i] +'">'+ data.kabupaten[i] +'</option>'
 					}
@@ -369,6 +396,142 @@
 				}
 
 			});
+
+			// dimensi3
+			$("#dimensi3_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi3_val").html(opt)
+				}
+
+				if ($(this).val() === 'actor1') {
+					var actor1_opt = '<option value="all">Semua Jenis Aktor 1</option>';
+					for (var i = 0, len = data.actor_s1_tp.length; i < len; i++) {
+						actor1_opt = actor1_opt + '<option value="'+ data.actor_s1_val[i] +'">'+ data.actor_s1_tp[i] +'</option>'
+					}
+
+					console.log(actor1_opt);
+					$("#dimensi3_val").html(actor1_opt)
+				}
+
+				if ($(this).val() === 'actor2') {
+					var actor2_opt = '<option value="all">Semua Jenis Aktor 2</option>';
+					for (var i = 0, len = data.actor_s2_tp.length; i < len; i++) {
+						actor2_opt = actor2_opt + '<option value="'+ data.actor_s2_val[i] +'">'+ data.actor_s2_tp[i] +'</option>'
+					}
+
+					console.log(actor2_opt);
+					$("#dimensi3_val").html(actor2_opt)
+				}
+
+			});
+
+			// dimensi5
+			$("#dimensi5_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi5_val").html(opt)
+				}
+
+				if ($(this).val() === 'weapon_1') {
+					var weapon_1_opt = '<option value="all">Semua Senjata Level 1</option>';
+					for (var i = 0, len = data.weapon_1.length; i < len; i++) {
+						weapon_1_opt = weapon_1_opt + '<option value="'+ data.weapon_1_val[i] +'">'+ data.weapon_1[i] +'</option>'
+					}
+
+					console.log(weapon_1_opt);
+					$("#dimensi5_val").html(weapon_1_opt)
+				}
+
+				if ($(this).val() === 'weapon_2') {
+					var weapon_2_opt = '<option value="all">Semua Senjata Level 2</option>';
+					for (var i = 0, len = data.weapon_2.length; i < len; i++) {
+						weapon_2_opt = weapon_2_opt + '<option value="'+ data.weapon_2_val[i] +'">'+ data.weapon_2[i] +'</option>'
+					}
+
+					console.log(weapon_2_opt);
+					$("#dimensi5_val").html(weapon_2_opt)
+				}
+
+			});
+
+			// dimensi6
+			$("#dimensi6_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi6_val").html(opt)
+				}
+
+				if ($(this).val() === 'jenis_kek') {
+					var jenis_kek_opt = '<option value="all">Semua Jenis Kekerasan</option>';
+					for (var i = 0, len = data.jenis_kek.length; i < len; i++) {
+						jenis_kek_opt = jenis_kek_opt + '<option value="'+ data.jenis_kek_val[i] +'">'+ data.jenis_kek[i] +'</option>'
+					}
+
+					console.log(jenis_kek_opt);
+					$("#dimensi6_val").html(jenis_kek_opt)
+				}
+
+			});
+
+			// dimensi7
+			$("#dimensi7_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi7_val").html(opt)
+				}
+
+				if ($(this).val() === 'tp_kek') {
+					var tp_kek1_new_opt = '<option value="all">Semua Tipe Kekerasan</option>';
+					for (var i = 0, len = data.tp_kek1_new.length; i < len; i++) {
+						tp_kek1_new_opt = tp_kek1_new_opt + '<option value="'+ data.tp_kek1_val[i] +'">'+ data.tp_kek1_new[i] +'</option>'
+					}
+
+					console.log(tp_kek1_new_opt);
+					$("#dimensi7_val").html(tp_kek1_new_opt)
+				}
+
+			});
+
+			// dimensi8
+			$("#dimensi8_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi8_val").html(opt)
+				}
+
+				if ($(this).val() === 'ben_kek') {
+					var ben_kek1_opt = '<option value="all">Semua Bentuk Kekerasan</option>';
+					for (var i = 0, len = data.ben_kek1.length; i < len; i++) {
+						ben_kek1_opt = ben_kek1_opt + '<option value="'+ data.ben_kek1_val[i] +'">'+ data.ben_kek1[i] +'</option>'
+					}
+
+					console.log(ben_kek1_opt);
+					$("#dimensi8_val").html(ben_kek1_opt)
+				}
+
+			});
+
+			// dimensi9
+			$("#dimensi9_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi9_val").html(opt)
+				}
+
+				if ($(this).val() === 'meta_kek') {
+					var meta_kek_opt = '<option value="all">Semua Meta Jenis Kekerasan</option>';
+					for (var i = 0, len = data.meta_kek.length; i < len; i++) {
+						meta_kek_opt = meta_kek_opt + '<option value="'+ data.meta_kek_val[i] +'">'+ data.meta_kek[i] +'</option>'
+					}
+
+					console.log(meta_kek_opt);
+					$("#dimensi9_val").html(meta_kek_opt)
+				}
+
+			});
+
+
 		});
 	</script>
 </body>

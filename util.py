@@ -1,3 +1,24 @@
+def translate_bulan(bulan_num):
+    bulan_definition = {
+        1: "Januari",
+        2: "Februari",
+        3: "Maret",
+        4: "April",
+        5: "Mei",
+        6: "Juni",
+        7: "Juli",
+        8: "Agustus",
+        9: "September",
+        10: "Oktober",
+        11: "November",
+        12: "Desember"
+    }
+
+    try:
+        return bulan_definition[bulan_num]
+    except KeyError:
+        return "No translation for bulan number {}".format(bulan_num)
+
 def translate_actor(actor_num):
     actor_definition = {
         1: "Tidak jelas",
@@ -44,6 +65,19 @@ def translate_weapon(weapon_num):
         return weapon_definition[weapon_num]
     except KeyError:
         return "No translation for weapon number {}".format(weapon_num)
+
+def translate_jenis_kek(jenis_kek_num):
+    jenis_definition = {
+        1: "Konflik",
+        2: "Kekerasan dalam rumah tangga",
+        3: "Kriminalitas ",
+        4: "Kekerasan dalam penegakan hukum"
+    }
+
+    try:
+        return jenis_definition[jenis_kek_num]
+    except KeyError:
+        return "No translation for jenis kekerasan number {}".format(jenis_kek_num)
 
 
 def translate_tipe_kekerasan(tipe_kekerasan_num):
@@ -127,3 +161,22 @@ def translate_bentuk_kekerasan(bentuk_kekerasan_num):
         return bentuk_kekerasan_definition[bentuk_kekerasan_num]
     except KeyError:
         return "No translation for bentuk kekerasan number {}".format(bentuk_kekerasan_num)
+
+def translate_meta_kekerasan(meta_kekerasan_num):
+    meta_kekerasan_definition = {
+        88881: "Konflik Sumber Daya",
+        88882: "Konflik Tata Kelola Pemerintahan",
+        88883: "Konflik Pemilihan dan Jabatan",
+        88884: "Konflik Identitas",
+        88885: "Konflik main hakim sendiri",
+        88886: "Kekerasan dalam penegakan hukum",
+        88887: "Kriminalitas",
+        88888: "Kekerasan dalam rumah tangga",
+        88889: "Separatisme",
+        88880: "Konflik Lainnya"
+    }
+
+    try:
+        return meta_kekerasan_definition[meta_kekerasan_num]
+    except KeyError:
+        return "No translation for bentuk kekerasan number {}".format(meta_kekerasan_num)

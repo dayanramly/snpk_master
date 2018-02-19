@@ -11,7 +11,7 @@ import numpy as np
 import pyfpgrowth
 import json
 
-from util import translate_actor, translate_weapon, translate_tipe_kekerasan, translate_bentuk_kekerasan
+from util import translate_bulan, translate_actor, translate_weapon, translate_jenis_kek, translate_tipe_kekerasan, translate_bentuk_kekerasan, translate_meta_kekerasan
 
 app = Flask('snpk', template_folder='templates')
 app.config['UPLOAD_FOLDER'] = 'uploadfiles'
@@ -84,19 +84,29 @@ def selected_files():
 
 	data = {
 		'tahun': [x for x in snpkframe.tahun.unique()],
-		'bulan': [x for x in snpkframe.bulan.unique()],
+		'bulan': [translate_bulan(x) for x in snpkframe.bulan.unique()],
+		'bulan_val': [x for x in snpkframe.bulan.unique()],
 		'quarter': [x for x in snpkframe.quarter.unique()],
 		'provinsi': [x for x in snpkframe.provinsi.unique()],
 		'kabupaten': [x for x in snpkframe.kabupaten.unique()],
 		'kecamatan1': [x for x in snpkframe.kecamatan1.unique()],
 		'kecamatan2': [x for x in snpkframe.kecamatan2.unique()],
+		'actor_s1_val': [x for x in snpkframe.actor_s1_tp.unique()],
+		'actor_s2_val': [x for x in snpkframe.actor_s2_tp.unique()],
+		'weapon_1_val': [x for x in snpkframe.weapon_1.unique()],
+		'weapon_2_val': [x for x in snpkframe.weapon_2.unique()],
+		'jenis_kek_val': [x for x in snpkframe.jenis_kek.unique()],
+		'tp_kek1_val': [x for x in snpkframe.tp_kek1_new.unique()],
+		'ben_kek1_val': [x for x in snpkframe.ben_kek1.unique()],
+		'meta_kek_val': [x for x in snpkframe.meta_tp_kek1_new.unique()],
 		'actor_s1_tp': [translate_actor(x) for x in snpkframe.actor_s1_tp.unique()],
 		'actor_s2_tp': [translate_actor(x) for x in snpkframe.actor_s2_tp.unique()],
 		'weapon_1': [translate_weapon(x) for x in snpkframe.weapon_1.unique()],
 		'weapon_2': [translate_weapon(x) for x in snpkframe.weapon_2.unique()],
+		'jenis_kek': [translate_jenis_kek(x) for x in snpkframe.jenis_kek.unique()],
 		'tp_kek1_new': [translate_tipe_kekerasan(x) for x in snpkframe.tp_kek1_new.unique()],
 		'ben_kek1': [translate_bentuk_kekerasan(x) for x in snpkframe.ben_kek1.unique()],
-		'ben_kek2': [translate_bentuk_kekerasan(x) for x in snpkframe.ben_kek2.unique()],
+		'meta_kek': [translate_meta_kekerasan(x) for x in snpkframe.meta_tp_kek1_new.unique()]
 	}
 
 	data = json.dumps(data)
@@ -105,19 +115,63 @@ def selected_files():
 
 @app.route('/seleksi_data', methods=['GET', 'POST'])
 def show_selection():
-	merge_rows = []
+	# merge_rows = []
 
-	for filename in request.args.getlist('filename'):
-		merge_rows.append(pd.read_csv(join(csv_path, filename), encoding='ISO-8859-1', low_memory=False))
+	# for filename in request.args.getlist('filename'):
+	# 	merge_rows.append(pd.read_csv(join(csv_path, filename), encoding='ISO-8859-1', low_memory=False))
 
-	snpkframe = pd.concat(merge_rows)
+	# snpkframe = pd.concat(merge_rows)
 
 	dimensi1_key = request.form.get('dimensi1_key')
-	dimensi1 = request.form.get('dimensi1')
+	dimensi1 = request.form.get('dimensi1')	
+	dimensi2_key = request.form.get('dimensi2_key')
+	dimensi2 = request.form.get('dimensi2')	
+	dimensi3_key = request.form.get('dimensi3_key')
+	dimensi3 = request.form.get('dimensi3')	
+	dimensi4_key = request.form.get('dimensi4_key')
+	dimensi4 = request.form.get('dimensi4')	
+	dimensi5_key = request.form.get('dimensi5_key')
+	dimensi5 = request.form.get('dimensi5')	
+	dimensi6_key = request.form.get('dimensi6_key')
+	dimensi6 = request.form.get('dimensi6')	
+	dimensi7_key = request.form.get('dimensi7_key')
+	dimensi7 = request.form.get('dimensi7')	
+	dimensi8_key = request.form.get('dimensi8_key')
+	dimensi8 = request.form.get('dimensi8')	
+	dimensi9_key = request.form.get('dimensi9_key')
+	dimensi9 = request.form.get('dimensi9')
+	minsup1 = request.form.get('minsup1')
+	minconf1 = request.form.get('minconf1')	
+	minsup2 = request.form.get('minsup2')
+	minconf2 = request.form.get('minconf2')	
+	minsup3 = request.form.get('minsup3')
+	minconf3 = request.form.get('minconf3')
 
 	data = {
 		'dimensi1_key': request.form.get('dimensi1_key'),
-		'dimensi1': request.form.get('dimensi1')
+		'dimensi1': request.form.get('dimensi1'),
+		'dimensi2_key': request.form.get('dimensi2_key'),
+		'dimensi2': request.form.get('dimensi2'),
+		'dimensi3_key': request.form.get('dimensi3_key'),
+		'dimensi3': request.form.get('dimensi3'),
+		'dimensi4_key': request.form.get('dimensi4_key'),
+		'dimensi4': request.form.get('dimensi4'),
+		'dimensi5_key': request.form.get('dimensi5_key'),
+		'dimensi5': request.form.get('dimensi5'),
+		'dimensi6_key': request.form.get('dimensi6_key'),
+		'dimensi6': request.form.get('dimensi6'),
+		'dimensi7_key': request.form.get('dimensi7_key'),
+		'dimensi7': request.form.get('dimensi7'),
+		'dimensi8_key': request.form.get('dimensi8_key'),
+		'dimensi8': request.form.get('dimensi8'),
+		'dimensi9_key': request.form.get('dimensi9_key'),
+		'dimensi9': request.form.get('dimensi9'),
+		'minsup1': request.form.get('minsup1'),
+		'minconf1': request.form.get('minconf1'),
+		'minsup2': request.form.get('minsup2'),
+		'minconf2': request.form.get('minconf2'),
+		'minsup3': request.form.get('minsup3'),
+		'minconf3': request.form.get('minconf3')
 	}
 
 	return render_template('show_selection.html', data=data)
