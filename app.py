@@ -82,15 +82,20 @@ def selected_files():
 
 	snpkframe = pd.concat(merge_rows)
 
+	kek_all = ['Terbunuh','Luka-Luka','Penculikan','Pelecehan Seksual','Bangunan Rusak']
+	kek_all_key = ['kil_total','inj_total','kidnap_tot','sex_as_tot','build_dmg_total']
+	kek_f = ['Perempuan Terbunuh','Perempuan Luka-Luka','Penculikan Perempuan','Pelecehan Seksual Perempuan']
+	kek_f_key = ['kil_f','inj_f','kid_f','sex_f','build_dmg_total']
+
 	data = {
 		'tahun': [x for x in snpkframe.tahun.unique()],
-		'bulan': [translate_bulan(x) for x in snpkframe.bulan.unique()],
 		'bulan_val': [x for x in snpkframe.bulan.unique()],
-		'quarter': [x for x in snpkframe.quarter.unique()],
 		'provinsi': [x for x in snpkframe.provinsi.unique()],
 		'kabupaten': [x for x in snpkframe.kabupaten.unique()],
-		'kecamatan1': [x for x in snpkframe.kecamatan1.unique()],
-		'kecamatan2': [x for x in snpkframe.kecamatan2.unique()],
+		'kek_all': [x for x in kek_all],
+		'kek_all_key': [x for x in kek_all_key],
+		'kek_f': [x for x in kek_f],
+		'kek_f_key': [x for x in kek_f_key],
 		'actor_s1_val': [x for x in snpkframe.actor_s1_tp.unique()],
 		'actor_s2_val': [x for x in snpkframe.actor_s2_tp.unique()],
 		'weapon_1_val': [x for x in snpkframe.weapon_1.unique()],
@@ -99,6 +104,7 @@ def selected_files():
 		'tp_kek1_val': [x for x in snpkframe.tp_kek1_new.unique()],
 		'ben_kek1_val': [x for x in snpkframe.ben_kek1.unique()],
 		'meta_kek_val': [x for x in snpkframe.meta_tp_kek1_new.unique()],
+		'bulan': [translate_bulan(x) for x in snpkframe.bulan.unique()],
 		'actor_s1_tp': [translate_actor(x) for x in snpkframe.actor_s1_tp.unique()],
 		'actor_s2_tp': [translate_actor(x) for x in snpkframe.actor_s2_tp.unique()],
 		'weapon_1': [translate_weapon(x) for x in snpkframe.weapon_1.unique()],
@@ -115,6 +121,7 @@ def selected_files():
 
 @app.route('/seleksi_data', methods=['GET', 'POST'])
 def show_selection():
+	con = []
 	# merge_rows = []
 
 	# for filename in request.args.getlist('filename'):
@@ -140,12 +147,12 @@ def show_selection():
 	dimensi8 = request.form.get('dimensi8')	
 	dimensi9_key = request.form.get('dimensi9_key')
 	dimensi9 = request.form.get('dimensi9')
-	minsup1 = request.form.get('minsup1')
-	minconf1 = request.form.get('minconf1')	
-	minsup2 = request.form.get('minsup2')
-	minconf2 = request.form.get('minconf2')	
-	minsup3 = request.form.get('minsup3')
-	minconf3 = request.form.get('minconf3')
+	minsup1 = request.form.get('minsup-1')
+	minconf1 = request.form.get('minconf-1')	
+	minsup2 = request.form.get('minsup-2')
+	minconf2 = request.form.get('minconf-2')	
+	minsup3 = request.form.get('minsup-3')
+	minconf3 = request.form.get('minconf-3')
 
 	data = {
 		'dimensi1_key': request.form.get('dimensi1_key'),
@@ -166,15 +173,64 @@ def show_selection():
 		'dimensi8': request.form.get('dimensi8'),
 		'dimensi9_key': request.form.get('dimensi9_key'),
 		'dimensi9': request.form.get('dimensi9'),
-		'minsup1': request.form.get('minsup1'),
-		'minconf1': request.form.get('minconf1'),
-		'minsup2': request.form.get('minsup2'),
-		'minconf2': request.form.get('minconf2'),
-		'minsup3': request.form.get('minsup3'),
-		'minconf3': request.form.get('minconf3')
+		'minsup1': request.form.get('minsup-1'),
+		'minconf1': request.form.get('minconf-1'),
+		'minsup2': request.form.get('minsup-2'),
+		'minconf2': request.form.get('minconf-2'),
+		'minsup3': request.form.get('minsup-3'),
+		'minconf3': request.form.get('minconf-3')
 	}
 
-	return render_template('show_selection.html', data=data)
+		#kondisi dimensi 1
+	if dimensi1_key == 'tahun':
+		con.append('(snpkframe2["tahun"]==' + dimensi1 + ')')
+	elif dimensi1_key == 'bulan':
+		con.append('(snpkframe2["bulan"]==' + dimensi1 + ')')
+
+	#kondisi dimensi 2
+	if dimensi2_key == 'provinsi':
+		con.append('(snpkframe2["provinsi"]=="' + dimensi2 + '")')
+	elif dimensi2_key == 'kabupaten':
+		con.append('(snpkframe2["kabupaten"]=="' + dimensi2 + '")')
+
+		#kondisi dimensi 3
+	if dimensi3_key == 'actor1':
+		con.append('(snpkframe2["actor_s1_tp"]==' + dimensi3 + ')')
+	elif dimensi3_key == 'actor2':
+		con.append('(snpkframe2["actor_s2_tp"]==' + dimensi3 + ')')
+
+		#kondisi dimensi 4
+	if dimensi4_key == 'dampak-all':
+		con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
+	elif dimensi4_key == 'dampak-f':
+		con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
+
+		#kondisi dimensi 5
+	if dimensi5_key == 'weapon_1':
+		con.append('(snpkframe2["weapon_1"]==' + dimensi5 + ')')
+	elif dimensi5_key == 'weapon_2':
+		con.append('(snpkframe2["weapon_2"]==' + dimensi5 + ')')
+
+		#kondisi dimensi 6
+	if dimensi6_key == 'jenis_kek':
+		con.append('(snpkframe2["jenis_kek"]==' + dimensi6 + ')')
+
+		#kondisi dimensi 7
+	if dimensi7_key == 'tp_kek_new':
+		con.append('(snpkframe2["tp_kek_new"]==' + dimensi7 + ')')
+
+		#kondisi dimensi 8
+	if dimensi8_key == 'ben_kek':
+		con.append('(snpkframe2["ben_kek1"]==' + dimensi8 + ')')
+
+		#kondisi dimensi 9
+	if dimensi9_key == 'meta_kek':
+		con.append('(snpkframe2["meta_tp_kek1_new"]==' + dimensi9 + ')')
+
+	separator = " & ";
+	data_condition = separator.join(con)
+
+	return render_template('show_selection.html', data=data_condition)
 
 @app.route('/selection')
 def load_selection():
@@ -194,9 +250,3 @@ if __name__ == '__main__':
 	app.run(host=host,
 		port=port,
 		debug=debug)
-
-def classifier(row):
-	if row["kil_f"] > 0 or row["inj_f"] > 0 or row["kid_f"] > 0 or row["sex_f"] > 0:
-		return "KtP"
-	else:
-		return "Tidak"

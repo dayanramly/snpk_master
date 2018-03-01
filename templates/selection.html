@@ -18,7 +18,7 @@
 					<span class="icon-bar"></span>
 					<span class="icon-bar"></span>
 				</button>
-				<a class="navbar-brand" href="index.html">
+				<a class="navbar-brand" href="/">
 					<img src="{{ url_for('static', filename='img/snpk_logo_white.png') }}">
 					<h2>Sistem Nasional Pemantauan Kekerasan</h2>
 				</a>
@@ -120,8 +120,8 @@
 						<div class="col-md-4">
 							<select class="form-control select-form" id="dimensi4_key" name="dimensi4_key">
 								<option value="all">Semua Level</option>
-								<option>Level 1 - Dampak Keseluruhan</option>
-								<option>Level 2 - Dampak Terhadap Perempuan</option>
+								<option value="dampak-all">Level 1 - Dampak Keseluruhan</option>
+								<option value="dampak-f">Level 2 - Dampak Terhadap Perempuan</option>
 							</select>
 						</div>
 						<div class="col-md-5">
@@ -422,6 +422,36 @@
 
 					console.log(actor2_opt);
 					$("#dimensi3_val").html(actor2_opt)
+				}
+
+			});
+
+			// dimensi4
+			$("#dimensi4_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi4_val").html(opt)
+				}
+
+				if ($(this).val() === 'dampak-all') {
+					console.log(data.kek_all.length)
+					var kek_all_opt = '<option value="all">Semua Dampak Keseluruhan</option>';
+					for (var i = 0, len = data.kek_all.length; i < len; i++) {
+						kek_all_opt = kek_all_opt + '<option value="'+ data.kek_all_key[i] +'">'+ data.kek_all[i] +'</option>'
+					}
+
+					console.log(kek_all_opt);
+					$("#dimensi4_val").html(kek_all_opt)
+				}
+
+				if ($(this).val() === 'dampak-f') {
+					var kek_f_opt = '<option value="all">Semua Dampak Perempuan</option>';
+					for (var i = 0, len = data.kek_f.length; i < len; i++) {
+						kek_f_opt = kek_f_opt + '<option value="'+ data.kek_f_key[i] +'">'+ data.kek_f[i] +'</option>'
+					}
+
+					console.log(kek_f_opt);
+					$("#dimensi4_val").html(kek_f_opt)
 				}
 
 			});
