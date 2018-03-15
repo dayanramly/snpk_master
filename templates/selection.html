@@ -270,47 +270,14 @@
 						</div>
 					</div>
 					<div class="row selection-minsup">
-						<div class="col-md-2">
-							<p>Level 2</p>
+						<div class="col-md-3">
+							<p>File Selected</p>
 						</div>
-						<div class="col-md-5">
-							<span>MinSup</span>
+						<div class="col-md-9">
 							<div class="form-group">
 								<div class="input-group">
-									<input type="text" class="form-control" id="minsup-2" name="minsup-2">
-									<div class="input-group-addon">%</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-5">
-							<span>MinConf</span>
-							<div class="form-group">
-								<div class="input-group">
-									<input type="text" class="form-control" id="minconf-2" name="minconf-2">
-									<div class="input-group-addon">%</div>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div class="row selection-minsup">
-						<div class="col-md-2">
-							<p>Level 3</p>
-						</div>
-						<div class="col-md-5">
-							<span>MinSup</span>
-							<div class="form-group">
-								<div class="input-group">
-									<input type="text" class="form-control" id="minsup-3" name="minsup-3">
-									<div class="input-group-addon">%</div>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-5">
-							<span>MinConf</span>
-							<div class="form-group">
-								<div class="input-group">
-									<input type="text" class="form-control" id="minconf-3" name="minconf-3">
-									<div class="input-group-addon">%</div>
+									<!-- <p id="file_selected" name="file_selected"></p> -->
+									<input type="text" class="form-control" id="file_selected" name="file_selected" value="">
 								</div>
 							</div>
 						</div>
@@ -339,6 +306,11 @@
 		$(function () {
 			var data = {{ rows | safe }}
 			console.log(data)
+			console.log(data.url_path)
+			// var str1 = ''.join(data.url_path)
+			// console.log(str1)
+			// $("#file_selected").html(data.url_path)
+			$("#file_selected").val(data.url_path)
 
 			// dimensi1
 			$("#dimensi1_key").change(function () {

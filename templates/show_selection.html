@@ -31,10 +31,21 @@
 			</div>
 		</div>
 	</nav>
+
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-				{{ data }}
+				<div class="table-responsive show-table">
+					{{ data|safe }}
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-md-12">
+				<!-- {{ data }} -->
 
 				<div id="map"></div>
 			</div>
@@ -50,5 +61,12 @@
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/mapdata.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/countrymap.js') }}"></script>
+
+	<script type="text/javascript">
+		$(function () {
+			var data = {{ data | safe }}
+			console.log(data.data)
+		});
+	</script>
 </body>
 </html>
