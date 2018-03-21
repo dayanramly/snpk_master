@@ -26,6 +26,8 @@ def allowed_file(filename):
 	return '.' in filename and \
 		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+def jsonDefault(object):
+    return object.__dict__
 # @app.route("/")
 # def main():
 # 	datasnpk = ['snpk_source/SNPK1997.csv']
@@ -118,7 +120,7 @@ def selected_files():
 		'url_path': request.args.getlist('filename')
 	}
 
-	data = json.dumps(data)
+	data = json.dumps(data, default=jsonDefault)
 
 	return render_template('selection.html', rows=data)
 
@@ -362,10 +364,10 @@ def show_selection():
 	else:
 		min_conf = 0
 
-	print_supp = {
-		'min_sup': min_sup,
-		'min_conf': min_conf
-	}
+	# print_supp = {
+	# 	'min_sup': min_sup,
+	# 	'min_conf': min_conf
+	# }
 
 	#seleksi data dengan kriteria yang ditentukan
 	if rules_filter == '':
@@ -443,7 +445,7 @@ def show_selection():
 
 	print_html = json2html.convert(json = out_filter_result, table_attributes="id=\"info-table\" class=\"table table-bordered table-hover\"")
 
-	# data_html = out_filter_result.to_html(classes="table table-data")
+	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
 
 	# filter_result = json.dumps(filter_result)
