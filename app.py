@@ -362,7 +362,8 @@ def show_selection():
 	row_total = len(snpkframe2.index)
 	# min_sup = int((float(minsup1) / 100) * row_total)
 	if minsup1:
-		min_sup = int((float(minsup1) / 100) * row_total)
+		min_sup = minsup1
+		# min_sup = int((float(minsup1) / 100) * row_total)
 	else:
 		min_sup = 10
 
