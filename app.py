@@ -26,8 +26,6 @@ def allowed_file(filename):
 	return '.' in filename and \
 		filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def jsonDefault(object):
-    return object.__dict__
 # @app.route("/")
 # def main():
 # 	datasnpk = ['snpk_source/SNPK1997.csv']
@@ -120,7 +118,7 @@ def selected_files():
 		'url_path': request.args.getlist('filename')
 	}
 
-	data = json.dumps(data, default=jsonDefault)
+	data = json.dumps(data)
 
 	return render_template('selection.html', rows=data)
 
@@ -390,7 +388,7 @@ def show_selection():
 
 	snpkframe31 = snpkframe3.loc[:, snpkframe3.columns.to_series().str.contains('dim').tolist()]
 
-	json_before_fpgrowth = snpkframe31.to_json(orient='split')
+	# json_before_fpgrowth = snpkframe31.to_json(orient='split')
 
 	#convert into matrix
 	convMatrix = snpkframe31.as_matrix()
@@ -437,6 +435,8 @@ def show_selection():
 						return "Nasional"
 
 		result_join['Result'] = result_join.apply(f, axis=1)
+
+		result_join['Result'] = result_join['Result'].fillna('Nasional')
 
 		group_true = result_join.Result.notnull()
 		filter_result = result_join[group_true]
