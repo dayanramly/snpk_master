@@ -247,12 +247,20 @@
 						</div>
 					</div>
 					<div class="row selection-minsup">
+						<div class="col-md-10 col-md-offset-1 text-center">
+							<span>Jumlah total data</span>
+							<div class="form-group">
+								<p id="row_total"></p>
+							</div>
+						</div>
+					</div>
+					<div class="row selection-minsup">
 						<div class="col-md-5 col-md-offset-1">
 							<span>Item passage threshold</span>
 							<div class="form-group">
 								<div class="input-group">
 									<input type="text" class="form-control" id="minsup-1" name="minsup-1">
-									<div class="input-group-addon"></div>
+									<div class="input-group-addon">%</div>
 								</div>
 							</div>
 						</div>
@@ -304,6 +312,7 @@
 			var data = {{ rows | safe }}
 			console.log(data)
 			console.log(data.url_path)
+			$("#row_total").html(data.row_total)
 			// var str1 = ''.join(data.url_path)
 			// console.log(str1)
 			// $("#file_selected").html(data.url_path)

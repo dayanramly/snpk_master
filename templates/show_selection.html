@@ -35,9 +35,7 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="table-responsive show-table">
-					{{ data|safe }}
-				</div>
+				<div id="map"></div>
 			</div>
 		</div>
 	</div>
@@ -45,9 +43,9 @@
 	<div class="container-fluid">
 		<div class="row">
 			<div class="col-md-12">
-				<!-- {{ data }} -->
-
-				<div id="map"></div>
+				<div class="table-responsive show-table">
+					{{ data|safe }}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -60,25 +58,26 @@
 
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
 <script type="text/javascript">
-	var data = {{ data | safe }}
-	$(function () {
-		// simplemaps_countrymap.load()
-		var s,k = {};
-		for (var i = 0; i<data.length; i++ ){
-			s += '{';
-			s += 'name: "'+ data[i].Result +'",';
-			s += 'description:';
-			for(var j = 0; j<data[i].Value.length; j++){
-				s += data[i].Value[j].values0;
-			};
-			s += '},';
-		};
+	// var data = {{ data | safe }}
+	// $(function () {
+	// 	console.log(data)
+	// 	// simplemaps_countrymap.load()
+	// 	// var s,k = {};
+	// 	// for (var i = 0; i<data.length; i++ ){
+	// 	// 	s += '{';
+	// 	// 	s += 'name: "'+ data[i].Result +'",';
+	// 	// 	s += 'description:';
+	// 	// 	for(var j = 0; j<data[i].Value.length; j++){
+	// 	// 		s += data[i].Value[j].values0;
+	// 	// 	};
+	// 	// 	s += '},';
+	// 	// };
 		
-		console.log(s)
-		// simplemaps_countrymap_mapdata.main_settings.state_specific.append(s);
-		simplemaps_countrymap.load()
+	// 	// console.log(s)
+	// 	// simplemaps_countrymap_mapdata.main_settings.state_specific.append(s);
+	// 	// simplemaps_countrymap.load()
 
-	});
+	// });
 
 	var simplemaps_countrymap_mapdata={
 		main_settings: {
@@ -145,7 +144,7 @@
 
 				//Advanced settings
 				div: "map",
-				auto_load: "no",
+				auto_load: "yes",
 				url_new_tab: "no",
 				images_directory: "default",
 				fade_time: 0.1,

@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 from pandas import DataFrame, read_csv
 from itertools import combinations
 from sklearn.preprocessing import LabelEncoder, LabelBinarizer
+from json2html import *
 import csv
 import pandas as pd
 import numpy as np
@@ -113,6 +114,7 @@ def selected_files():
 		'tp_kek1_new': [translate_tipe_kekerasan(x) for x in snpkframe.tp_kek1_new.unique()],
 		'ben_kek1': [translate_bentuk_kekerasan(x) for x in snpkframe.ben_kek1.unique()],
 		'meta_kek': [translate_meta_kekerasan(x) for x in snpkframe.meta_tp_kek1_new.unique()],
+		'row_total': len(snpkframe.index),
 		'url_path': request.args.getlist('filename')
 	}
 
@@ -182,16 +184,22 @@ def show_selection():
 		'minconf1': request.form.get('minconf-1')
 	}
 
-	datas = json.dumps(get_data)
+	# datas = json.dumps(get_data)
 
 	#kondisi dimensi 1
 	if dimensi1_key == 'tahun':
-		con.append('(snpkframe2["tahun"]==' + dimensi1 + ')')
+		if dimensi1 != 'all':
+			con.append('(snpkframe2["tahun"]==' + dimensi1 + ')')
+		else:
+			con.append('(snpkframe2["tahun"].notnull())')
 		con_dimensi.append('"tahun"')
 		con_dimensi_enc.append('"1-" + snpkframe3["tahun"].astype(str)')
 	elif dimensi1_key == 'bulan':
+		if dimensi1 != 'all':
+			con.append('(snpkframe2["bulan"]==' + dimensi1 + ')')
+		else:
+			con.append('(snpkframe2["bulan"].notnull())')
 		con.append('(snpkframe2["tahun"].notnull())')
-		con.append('(snpkframe2["bulan"]==' + dimensi1 + ')')
 		con_dimensi.append('"tahun","bulan"')
 		con_dimensi_enc.append('"1-" + snpkframe3["tahun"].astype(str) + "-" + snpkframe3["bulan"].astype(str)')  
 	else:
@@ -200,12 +208,18 @@ def show_selection():
 
 	#kondisi dimensi 2
 	if dimensi2_key == 'provinsi':
-		con.append('(snpkframe2["provinsi"]=="' + dimensi2 + '")')
+		if dimensi2 != 'all':
+			con.append('(snpkframe2["provinsi"]=="' + dimensi2 + '")')
+		else:
+			con.append('(snpkframe2["provinsi"].notnull())')
 		con_dimensi.append('"provinsi"')
 		con_dimensi_enc.append('"2-" + snpkframe3["provinsi"].astype(str)')
 	elif dimensi2_key == 'kabupaten':
+		if dimensi2 != 'all':
+			con.append('(snpkframe2["kabupaten"]=="' + dimensi2 + '")')
+		else:
+			con.append('(snpkframe2["kabupaten"].notnull())')
 		con.append('(snpkframe2["provinsi"].notnull())')
-		con.append('(snpkframe2["kabupaten"]=="' + dimensi2 + '")')
 		con_dimensi.append('"provinsi","kabupaten"')
 		con_dimensi_enc.append('"2-" + snpkframe3["provinsi"].astype(str) + "-" + snpkframe3["kabupaten"].astype(str)')
 	else:
@@ -214,12 +228,18 @@ def show_selection():
 
 	#kondisi dimensi 3
 	if dimensi3_key == 'actor1':
-		con.append('(snpkframe2["actor_s1_tp"]==' + dimensi3 + ')')
+		if dimensi3 != 'all':
+			con.append('(snpkframe2["actor_s1_tp"]==' + dimensi3 + ')')
+		else:
+			con.append('(snpkframe2["actor_s1_tp"].notnull())')
 		con_dimensi.append('"actor_s1_tp"')
 		con_dimensi_enc.append('"3-" + snpkframe3["actor_s1_tp"].astype(str)')
 	elif dimensi3_key == 'actor2':
+		if dimensi3 != 'all':
+			con.append('(snpkframe2["actor_s2_tp"]==' + dimensi3 + ')')
+		else:
+			con.append('(snpkframe2["actor_s1_tp"].notnull())')
 		con.append('(snpkframe2["actor_s1_tp"].notnull())')
-		con.append('(snpkframe2["actor_s2_tp"]==' + dimensi3 + ')')
 		con_dimensi.append('"actor_s1_tp","actor_s2_tp"')
 		con_dimensi_enc.append('"3-" + snpkframe3["actor_s1_tp"].astype(str) + "-" + snpkframe3["actor_s2_tp"].astype(str)')
 	else:
@@ -228,24 +248,53 @@ def show_selection():
 
 	# kondisi dimensi 4
 	if dimensi4_key == 'dampak-all':
-		con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
-		con_dimensi.append('"'+ dimensi4 + '"')
-		con_dimensi_enc.append('"4-" + snpkframe3["' + dimensi4 + '"].astype(str)')
+		if dimensi4 != 'all':
+			con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
+			con_dimensi_enc.append('"4-" + snpkframe3["' + dimensi4 + '"].astype(str)')
+			con_dimensi.append('"'+ dimensi4 + '"')
+		else:
+			con.append('(snpkframe2["kil_total"].notnull())')
+			con.append('(snpkframe2["inj_total"].notnull())')
+			con.append('(snpkframe2["kidnap_tot"].notnull())')
+			con.append('(snpkframe2["sex_as_tot"].notnull())')
+			con_dimensi.append('"kil_total"')
+			con_dimensi.append('"inj_total"')
+			con_dimensi.append('"kidnap_tot"')
+			con_dimensi.append('"sex_as_tot"')
+			con_dimensi_enc.append('"4-" + snpkframe3["kil_total"].astype(str) + "-" + snpkframe3["inj_total"].astype(str)+ "-" + snpkframe3["kidnap_tot"].astype(str) + "-" + snpkframe3["sex_as_tot"].astype(str)')
+		
 	elif dimensi4_key == 'dampak-f':
-		con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
-		con_dimensi.append('"'+ dimensi4 + '"')
-		con_dimensi_enc.append('"4-" + snpkframe3["' + dimensi4 + '"].astype(str)')
+		if dimensi4 != 'all':
+			con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
+			con_dimensi.append('"'+ dimensi4 + '"')
+			con_dimensi_enc.append('"4-" + snpkframe3["' + dimensi4 + '"].astype(str)')
+		else:
+			con.append('(snpkframe2["kil_f"].notnull())')
+			con.append('(snpkframe2["inj_f"].notnull())')
+			con.append('(snpkframe2["kid_f"].notnull())')
+			con.append('(snpkframe2["sex_f"].notnull())')
+			con_dimensi.append('"kil_f"')
+			con_dimensi.append('"inj_f"')
+			con_dimensi.append('"kid_f"')
+			con_dimensi.append('"sex_f"')
+			con_dimensi_enc.append('"4-" + snpkframe3["kil_f"].astype(str) + "-" + snpkframe3["inj_f"].astype(str)+ "-" + snpkframe3["kid_f"].astype(str) + "-" + snpkframe3["sex_f"].astype(str)')
 	else:
 		con_dimensi.append('"kil_total","kil_f","inj_total","inj_f","kidnap_tot","kid_f","sex_as_tot","sex_f"')
 		con_dimensi_enc.append('"4-" + snpkframe3["kil_total"].astype(str) + "-" + snpkframe3["kil_f"].astype(str)+ "-" + snpkframe3["inj_total"].astype(str)+ "-" + snpkframe3["inj_f"].astype(str) + "-" + snpkframe3["kidnap_tot"].astype(str) + "-" + snpkframe3["kid_f"].astype(str) + snpkframe3["sex_as_tot"].astype(str) + "-" + snpkframe3["sex_f"].astype(str)')
 
 	#kondisi dimensi 5
 	if dimensi5_key == 'weapon_1':
-		con.append('(snpkframe2["weapon_1"]==' + dimensi5 + ')')
+		if dimensi5 != 'all':
+			con.append('(snpkframe2["weapon_1"]==' + dimensi5 + ')')
+		else:
+			con.append('(snpkframe2["weapon_1"].notnull())')
 		con_dimensi.append('"weapon_1"')
 		con_dimensi_enc.append('"5-" + snpkframe3["weapon_1"].astype(str)')
 	elif dimensi5_key == 'weapon_2':
-		con.append('(snpkframe2["weapon_2"]==' + dimensi5 + ')')
+		if dimensi5 != 'all':
+			con.append('(snpkframe2["weapon_2"]==' + dimensi5 + ')')
+		else:
+			con.append('(snpkframe2["weapon_2"].notnull())')
 		con_dimensi.append('"weapon_1","weapon_2"')
 		con_dimensi_enc.append('"5-" + snpkframe3["weapon_1"].astype(str) + "-" + snpkframe3["weapon_2"].astype(str)')
 	else:
@@ -254,33 +303,39 @@ def show_selection():
 
 	#kondisi dimensi 6
 	if dimensi6_key == 'jenis_kek':
-		con.append('(snpkframe2["jenis_kek"]==' + dimensi6 + ')')
+		if dimensi6 != 'all':
+			con.append('(snpkframe2["jenis_kek"]==' + dimensi6 + ')')
+		else:
+			con.append('(snpkframe2["jenis_kek"].notnull())')
 	con_dimensi.append('"jenis_kek"')
 	con_dimensi_enc.append('"6-" + snpkframe3["jenis_kek"].astype(str)')
 
 	#kondisi dimensi 7
 	if dimensi7_key == 'tp_kek_new':
-		con.append('(snpkframe2["tp_kek1_new"]==' + dimensi7 + ')')
+		if dimensi7 != 'all':
+			con.append('(snpkframe2["tp_kek1_new"]==' + dimensi7 + ')')
+		else:
+			con.append('(snpkframe2["tp_kek1_new"].notnull())')
 	con_dimensi.append('"tp_kek1_new"')
 	con_dimensi_enc.append('"7-" + snpkframe3["tp_kek1_new"].astype(str)')
 
 	#kondisi dimensi 8
 	if dimensi8_key == 'ben_kek':
-		con.append('(snpkframe2["ben_kek1"]==' + dimensi8 + ')')
+		if dimensi8 != 'all':
+			con.append('(snpkframe2["ben_kek1"]==' + dimensi8 + ')')
+		else:
+			con.append('(snpkframe2["ben_kek1"].notnull())')
 	con_dimensi.append('"ben_kek1"')
 	con_dimensi_enc.append('"8-" + snpkframe3["ben_kek1"].astype(str)')
 
 	#kondisi dimensi 9
 	if dimensi9_key == 'meta_kek':
-		con.append('(snpkframe2["meta_tp_kek1_new"]==' + dimensi9 + ')')
+		if dimensi9 != 'all':
+			con.append('(snpkframe2["meta_tp_kek1_new"]==' + dimensi9 + ')')
+		else:
+			con.append('(snpkframe2["meta_tp_kek1_new"].notnull())')
 	con_dimensi.append('"meta_tp_kek1_new"')
 	con_dimensi_enc.append('"9-" + snpkframe3["meta_tp_kek1_new"].astype(str)')
-
-	#menampilkan array hasil kondisi
-	con
-	
-	#menampilkan array hasil kondisi
-	con_dimensi
 
 	#join array dan konversi ke string
 	sep = " & ";
@@ -288,8 +343,29 @@ def show_selection():
 	rules_filter = sep.join(con)
 	rules_dimensi = sep_dim.join(con_dimensi)
 
+	# print_con = {
+	# 	'con': con,
+	# 	'con_dim': con_dimensi
+	# }
+
 	#seleksi kolom sebelum difilter
 	snpkframe2 = eval('snpkframe[['+ rules_dimensi +']]')
+	row_total = len(snpkframe2.index)
+	# min_sup = int((float(minsup1) / 100) * row_total)
+	if minsup1:
+		min_sup = int((float(minsup1) / 100) * row_total)
+	else:
+		min_sup = 10
+
+	if minconf1:
+		min_conf = float(minconf1) / 100
+	else:
+		min_conf = 0
+
+	print_supp = {
+		'min_sup': min_sup,
+		'min_conf': min_conf
+	}
 
 	#seleksi data dengan kriteria yang ditentukan
 	if rules_filter == '':
@@ -303,14 +379,16 @@ def show_selection():
 
 	snpkframe31 = snpkframe3.loc[:, snpkframe3.columns.to_series().str.contains('dim').tolist()]
 
+	json_before_fpgrowth = snpkframe31.to_json(orient='split')
+
 	#convert into matrix
 	convMatrix = snpkframe31.as_matrix()
 
 	#mencari pattern pada data kek_uji
-	patterns = pyfpgrowth.find_frequent_patterns(convMatrix, 10)
+	patterns = pyfpgrowth.find_frequent_patterns(convMatrix, min_sup)
 
 	#mencari rules dari pattern yang telah dibuat
-	rules = pyfpgrowth.generate_association_rules(patterns, 0.3)
+	rules = pyfpgrowth.generate_association_rules(patterns, min_conf)
 
 	dim1_list=list(rules.keys())
 	df_key = pd.DataFrame(dim1_list)
@@ -320,36 +398,40 @@ def show_selection():
 
 	dim2_list=list(rules.values())
 	df_values = pd.DataFrame(dim2_list)
-	total_columns_value = len(df_values.columns)
-	new_cols = ['values' + str(i) for i in df_values.columns] 
-	df_values.columns = new_cols[:total_columns_value]
+	df_values.rename(columns={0:'first'}, inplace=True)
+	df_values.rename(columns={1:'confident'}, inplace=True)
 
-	df_values.columns.values[-1] = 'confident'
+	df_values['first'] = df_values['first'].astype(str).str.strip('()')
+	df_values_key = df_values['first'].str.split(',', expand=True)
+	df_values_key = df_values_key.replace('', "None")
 
-	for col in df_values.columns.values:
-		# Encoding only categorical variables
-		if df_values[col].dtypes=='object':
-			df_values[col] = df_values[col].astype(str).map(lambda x: x.lstrip("('").rstrip("',)"))
-			df_values[col].astype(object)
+	df_values_conf = df_values['confident']
+	df_values_key = df_values_key.apply(lambda x: x.str.strip("'")).apply(lambda x: x.str.strip(" '"))
 
-	result_join = pd.concat([df_key, df_values], axis=1, join_axes=[df_key.index])
+	total_columns_value = len(df_values_key.columns)
+	new_cols = ['values' + str(i) for i in df_values_key.columns] 
+	df_values_key.columns = new_cols[:total_columns_value]
+	
+	result_join = pd.concat([df_key, df_values_key, df_values_conf], axis=1, join_axes=[df_key.index])
 
 	def f(row):
 		for col in row.index:
 			if (row[col] != None) & (not isinstance(row[col], float)):
 				if row[col][0] == '2':
 					a = row[col].split("-")
-					return a[1] 
+					return a[1]
+				else:
+					return "Nasional"
+
 	result_join['Result'] = result_join.apply(f, axis=1)
 
 	group_true = result_join.Result.notnull()
 	filter_result = result_join[group_true]
-	# out_filter_result = filter_result.to_json(orient='split')
+
+	html_filter_result = filter_result.groupby(['Result'])
+	# outs_filter_result = filter_result.to_json(orient='split')
 
 	# test_result = filter_result.to_json(orient='split')
-
-	data_html = filter_result.to_html(classes="table table-data")
-	data_html = data_html.replace('NaN', '')
 
 	# out_filter_result = filter_result.groupby('Result').apply(lambda x: x.to_json(orient='records'))
 
@@ -359,9 +441,14 @@ def show_selection():
 	 .rename(columns={0:'Value'})
 	 .to_json(orient='records'))
 
+	print_html = json2html.convert(json = out_filter_result, table_attributes="id=\"info-table\" class=\"table table-bordered table-hover\"")
+
+	# data_html = out_filter_result.to_html(classes="table table-data")
+	# data_html = data_html.replace('NaN', '')
+
 	# filter_result = json.dumps(filter_result)
 	# return redirect(url_for('load_selection', snpkframe=data_html))
-	return render_template('show_selection.html', data=datas)
+	return render_template('show_selection.html', data=print_html)
 
 
 	# return json.dumps(merge_rows)
