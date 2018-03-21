@@ -352,17 +352,17 @@ def show_selection():
 	rules_filter = sep.join(con)
 	rules_dimensi = sep_dim.join(con_dimensi)
 
-	print_con = {
-		'con': con,
-		'con_dim': con_dimensi
-	}
+	# print_con = {
+	# 	'con': con,
+	# 	'con_dim': con_dimensi
+	# }
 
 	#seleksi kolom sebelum difilter
 	snpkframe2 = eval('snpkframe[['+ rules_dimensi +']]')
 	row_total = len(snpkframe2.index)
 	# min_sup = int((float(minsup1) / 100) * row_total)
 	if minsup1:
-		min_sup = minsup1
+		min_sup = int(minsup1)
 		# min_sup = int((float(minsup1) / 100) * row_total)
 	else:
 		min_sup = 10
@@ -432,8 +432,6 @@ def show_selection():
 					if row[col][0] == '2':
 						a = row[col].split("-")
 						return a[1]
-					else:
-						return "Nasional"
 
 		result_join['Result'] = result_join.apply(f, axis=1)
 
@@ -443,11 +441,6 @@ def show_selection():
 		filter_result = result_join[group_true]
 
 		html_filter_result = filter_result.groupby(['Result'])
-		# outs_filter_result = filter_result.to_json(orient='split')
-
-		# test_result = filter_result.to_json(orient='split')
-
-		# out_filter_result = filter_result.groupby('Result').apply(lambda x: x.to_json(orient='records'))
 
 		out_filter_result = (filter_result.groupby(['Result'])
 		 .apply(lambda x: x.to_dict('r'))
@@ -461,15 +454,7 @@ def show_selection():
 
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
-
-	# filter_result = json.dumps(filter_result)
-	# return redirect(url_for('load_selection', snpkframe=data_html))
 	return render_template('show_selection.html', data=print_html)
-
-
-	# return json.dumps(merge_rows)
-
-	# return render_template('show_selection.html', data=snpkframe)
 
 @app.route('/selection')
 def load_selection():
