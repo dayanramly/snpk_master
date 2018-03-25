@@ -485,7 +485,7 @@ def show_selection():
 
     # data_html = result_join.to_html(classes="table table-data")
     # data_html = data_html.replace('NaN', '')
-    return render_template('show_selection.html', data=print_html, converted_data=converted_data)
+    return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result)
 
 
 @app.route('/selection')
