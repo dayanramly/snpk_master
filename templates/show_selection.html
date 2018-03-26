@@ -259,7 +259,9 @@
 
     $(function () {
     	var raw = {{raw_data | safe}}
+    	var time_exec = {{time_exe}}
     	console.log(raw)
+    	alert("execution time: " + time_exec + " seconds");
         simplemaps_countrymap.hooks.click_state = function (id) {
             name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);
             simplemaps_countrymap_mapdata.state_specific[id].color='red';
