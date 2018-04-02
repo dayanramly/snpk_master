@@ -43,7 +43,28 @@
 
 <div class="container-fluid">
     <div class="row">
+        <div class="col-md-4 text-center">
+        	<h4>Jumlah Rules</h4>
+            {{ total_rules }}
+        </div>
+        <div class="col-md-4 text-center">
+    		<h4>Waktu Eksekusi</h4>
+    		{{ time_exe }}
+    	</div>
+    	<div class="col-md-4 text-center">
+    		<h4>Provinsi</h4>
+    		{% for d in converted_data %}
+    			{{ d['Result'] }}
+    			<br />
+    		{% endfor %}
+    	</div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
         <div class="col-md-12">
+        	<h3>Data Kekerasan Nasional</h3>
             <div class="table-responsive show-table">
                 {{ data|safe }}
             </div>
@@ -59,14 +80,13 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                             aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Modal title</h4>
+                    <h4 class="modal-title" id="myModalLabel">{{ d['Result']}}</h4>
                 </div>
                 <div id="modal-body" class="modal-body">
                     {{ d['html'] | safe }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary">Save changes</button>
                 </div>
             </div>
         </div>
@@ -259,9 +279,9 @@
 
     $(function () {
     	var raw = {{raw_data | safe}}
-    	var time_exec = {{time_exe}}
+    	// var time_exec = {{time_exe}}
     	console.log(raw)
-    	alert("execution time: " + time_exec + " seconds");
+    	// alert("execution time: " + time_exec + " seconds");
         simplemaps_countrymap.hooks.click_state = function (id) {
             name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);
             simplemaps_countrymap_mapdata.state_specific[id].color='red';
