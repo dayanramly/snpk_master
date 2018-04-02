@@ -467,6 +467,7 @@ def show_selection():
 	else:
 		converted_data = []
 		print_html = "Tidak ada rules"
+		out_filter_result = "Tidak ada rules"
 
 	timer = (time.time() - start_time)
 	# data_html = result_join.to_html(classes="table table-data")
@@ -820,6 +821,8 @@ def show_selection_uji():
 	else:
 		converted_data = []
 		print_html = "Tidak ada rules"
+		"Tidak ada rules"
+		out_filter_result = "Tidak ada rules"
 
 	timer = (time.time() - start_time)
 	# data_html = result_join.to_html(classes="table table-data")
