@@ -26,283 +26,287 @@
 
 			<div class="collapse navbar-collapse" id="default-header">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="logout.html">Logout</a></li>
+					<li><a href="logout.html">Keluar</a></li>
 				</ul>
 			</div>
 		</div>
 	</nav>
-	<div class="container snpk-selection">
-		<div class="row">
-			<div class="col-md-12">	
-				<h3 class="text-center">Seleksi Data</h3>
+	<div class="container snpk-import">
+		<div class="row snpk-import-header text-center">
+			<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+				<h2>Seleksi Data</h2>
 			</div>
 		</div>
-		<form action="{{ url_for('show_selection') }}" method="post">
+	</div>
+	<div class="container-fluid snpk-import snpk-selection snpk-import-table">
+		<div class="container">
+			<form action="{{ url_for('show_selection') }}" method="post">
 
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2 selection-wrapper" id="selectionId">
+				<div class="row">
+					<div class="col-md-12 selection-wrapper" id="selectionId">
 
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-1">
-									Dimensi 1
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-1">
+										Dimensi 1
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi1_key" name="dimensi1_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="tahun">Level 1 - Tahun</option>
+									<option value="bulan">Level 2 - Bulan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi1_val" name="dimensi1" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi1_key" name="dimensi1_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="tahun">Level 1 - Tahun</option>
-								<option value="bulan">Level 2 - Bulan</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi1_val" name="dimensi1" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-2">
-									Dimensi 2
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-2">
+										Dimensi 2
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi2_key" name="dimensi2_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="provinsi">Level 1 - Provinsi</option>
+									<option value="kabupaten">Level 2 - Kabupaten</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi2_val" name="dimensi2" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi2_key" name="dimensi2_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="provinsi">Level 1 - Provinsi</option>
-								<option value="kabupaten">Level 2 - Kabupaten</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi2_val" name="dimensi2" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-3">
-									Dimensi 3
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-3">
+										Dimensi 3
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi3_key" name="dimensi3_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="actor1">Level 1 - Jenis Aktor</option>
+									<option value="actor2">Level 2 - Jenis Aktor</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi3_val" name="dimensi3" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi3_key" name="dimensi3_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="actor1">Level 1 - Jenis Aktor</option>
-								<option value="actor2">Level 2 - Jenis Aktor</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi3_val" name="dimensi3" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-4">
-									Dimensi 4
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-4">
+										Dimensi 4
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi4_key" name="dimensi4_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="dampak-all">Level 1 - Dampak Keseluruhan</option>
+									<option value="dampak-f">Level 2 - Dampak Terhadap Perempuan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi4_val" name="dimensi4" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi4_key" name="dimensi4_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="dampak-all">Level 1 - Dampak Keseluruhan</option>
-								<option value="dampak-f">Level 2 - Dampak Terhadap Perempuan</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi4_val" name="dimensi4" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-5">
-									Dimensi 5
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-5">
+										Dimensi 5
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi5_key" name="dimensi5_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="weapon_1">Level 1 - Jenis Senjata 1</option>
+									<option value="weapon_2">Level 2 - Jenis Senjata 2</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi5_val" name="dimensi5" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi5_key" name="dimensi5_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="weapon_1">Level 1 - Jenis Senjata 1</option>
-								<option value="weapon_2">Level 2 - Jenis Senjata 2</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi5_val" name="dimensi5" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-6">
-									Dimensi 6
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-6">
+										Dimensi 6
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi6_key" name="dimensi6_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="jenis_kek">Level 1 - Jenis Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi6_val" name="dimensi6" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi6_key" name="dimensi6_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="jenis_kek">Level 1 - Jenis Kekerasan</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi6_val" name="dimensi6" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-7">
-									Dimensi 7
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-7">
+										Dimensi 7
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi7_key" name="dimensi7_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="tp_kek">Level 1 - Kategori Tipe Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi7_val" name="dimensi7" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi7_key" name="dimensi7_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="tp_kek">Level 1 - Kategori Tipe Kekerasan</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi7_val" name="dimensi7" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-8">
-									Dimensi 8
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-8">
+										Dimensi 8
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi8_key" name="dimensi8_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="ben_kek">Level 1 - Bentuk Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi8_val" name="dimensi8" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi8_key" name="dimensi8_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="ben_kek">Level 1 - Bentuk Kekerasan</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi8_val" name="dimensi8" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox" name="dimensi-9">
-									Dimensi 9
-								</label>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-9">
+										Dimensi 9
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi9_key" name="dimensi9_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="meta_kek">Level 1 -  Meta Jenis Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi9_val" name="dimensi9" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
 							</div>
 						</div>
-						<div class="col-md-4">
-							<select class="form-control select-form" id="dimensi9_key" name="dimensi9_key" disabled>
-								<option value="all">Semua Level</option>
-								<option value="meta_kek">Level 1 -  Meta Jenis Kekerasan</option>
-							</select>
-						</div>
-						<div class="col-md-5">
-							<select class="form-control select-form" id="dimensi9_val" name="dimensi9" disabled>
-								<option value="all">Semua Objek</option>
-							</select>
-						</div>
-					</div>
 
+					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-6 col-md-offset-3 selection-wrapper selection-wrapper-minsup">
-					<div class="row selection-minsup-header">
-						<div class="col-md-12">
-							<h4>Item passage threshold dan Minimum Confident</h4>
-						</div>
-					</div>
-					<div class="row selection-minsup">
-						<div class="col-md-10 col-md-offset-1 text-center">
-							<span>Jumlah total data</span>
-							<div class="form-group">
-								<p id="row_total"></p>
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3 selection-wrapper selection-wrapper-minsup">
+						<div class="row selection-minsup-header">
+							<div class="col-md-12">
+								<h4>Item passage threshold dan Minimum Confident</h4>
 							</div>
 						</div>
-					</div>
-					<div class="row selection-minsup">
-						<div class="col-md-5 col-md-offset-1">
-							<span>Item passage threshold</span>
-							<div class="form-group">
-								<div class="input-group">
-									<input type="text" class="form-control" id="minsup-1" name="minsup-1">
-									<div class="input-group-addon"></div>
+						<div class="row selection-minsup">
+							<div class="col-md-8 col-md-offset-2 text-center">
+								<span>Total data</span>
+								<div class="form-group">
+									<p id="row_total"></p>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-5">
-							<span>Minimum Confident</span>
-							<div class="form-group">
-								<div class="input-group">
-									<input type="text" class="form-control" id="minconf-1" name="minconf-1">
-									<div class="input-group-addon">%</div>
+						<div class="row selection-minsup">
+							<div class="col-md-6">
+								<span>Item passage threshold</span>
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" class="form-control" id="minsup-1" name="minsup-1">
+										<div class="input-group-addon"></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<span>Minimum Confident</span>
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" class="form-control" id="minconf-1" name="minconf-1">
+										<div class="input-group-addon">%</div>
+									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="row selection-minsup" hidden>
-						<div class="col-md-3">
-							<p>File Selected</p>
-						</div>
-						<div class="col-md-9">
-							<div class="form-group">
-								<div class="input-group">
-									<!-- <p id="file_selected" name="file_selected"></p> -->
-									<input type="text" class="form-control" id="file_selected" name="file_selected" value="">
+						<div class="row selection-minsup" hidden>
+							<div class="col-md-3">
+								<p>File Selected</p>
+							</div>
+							<div class="col-md-9">
+								<div class="form-group">
+									<div class="input-group">
+										<!-- <p id="file_selected" name="file_selected"></p> -->
+										<input type="text" class="form-control" id="file_selected" name="file_selected" value="">
+									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="row">
-				<div class="col-md-8 col-md-offset-2 selection-wrapper text-center">
-					<button class="btn btn-green btn-normal" type="submit" name="action" value="MultiDimension">
-						Multi Dimension
-						<i class="ion-arrow-right-c"></i>
-					</button>
-					<button class="btn btn-green btn-normal" type="submit" name="action" value="SingleDimension">
-						Single Dimension
-						<i class="ion-arrow-right-c"></i>
-					</button>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 selection-wrapper text-center">
+						<button class="btn btn-green btn-normal" type="submit" name="action" value="SingleDimension">
+							<i class="ion-minus-round"></i>
+							Single Dimension
+						</button>
+						<button class="btn btn-green btn-normal" type="submit" name="action" value="MultiDimension">
+							<i class="ion-navicon-round"></i>
+							Multi Dimension
+						</button>
+					</div>
 				</div>
-			</div>
-		</form>
+			</form>
 
+		</div>
 	</div>
 
 	<!-- footer section -->

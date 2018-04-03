@@ -459,11 +459,11 @@ def show_selection():
 					national_data = v
 				else:
 					html = json2html.convert(json=v,
-											 table_attributes="id=\"info-table\" class=\"table table-bordered table-hover\"")
+											 table_attributes="id=\"info-table\" class=\"table\"")
 					v['html'] = html
 
 			print_html = json2html.convert(json=national_data,
-										   table_attributes="id=\"info-table\" class=\"table table-bordered table-hover\"")
+										   table_attributes="id=\"info-table\" class=\"table\"")
 		else:
 			converted_data = []
 			total_rules = 0
@@ -782,11 +782,11 @@ def show_selection():
 					national_data = v
 				else:
 					html = json2html.convert(json=v,
-											 table_attributes="id=\"info-table\" class=\"table table-bordered table-hover\"")
+											 table_attributes="id=\"info-table\" class=\"table\"")
 					v['html'] = html
 
 			print_html = json2html.convert(json=national_data,
-										   table_attributes="id=\"info-table\" class=\"table table-bordered table-hover\"")
+										   table_attributes="id=\"info-table\" class=\"table\"")
 		else:
 			converted_data = []
 			total_rules = 0
