@@ -40,6 +40,10 @@ def upload():
 
 
 @app.route('/')
+def welcome():
+	return render_template('login.html')
+
+@app.route('/start')
 def main():
 	files = []
 
@@ -802,11 +806,6 @@ def show_selection():
 @app.route('/selection')
 def load_selection():
 	return render_template('selection.html')
-
-
-@app.route('/login')
-def login():
-	return render_template('login.html')
 
 
 if __name__ == '__main__':
