@@ -291,7 +291,7 @@ def show_selection():
 			else:
 				con_dimensi.append('"kil_total","kil_f","inj_total","inj_f","kidnap_tot","kid_f","sex_as_tot","sex_f"')
 				con_dimensi_enc.append(
-					'"4-" + snpkframe3["kil_total"].astype(str) + "-" + snpkframe3["kil_f"].astype(str)+ "-" + snpkframe3["inj_total"].astype(str)+ "-" + snpkframe3["inj_f"].astype(str) + "-" + snpkframe3["kidnap_tot"].astype(str) + "-" + snpkframe3["kid_f"].astype(str) + snpkframe3["sex_as_tot"].astype(str) + "-" + snpkframe3["sex_f"].astype(str)')
+					'"4-" + snpkframe3["kil_total"].astype(str) + "-" + snpkframe3["kil_f"].astype(str)+ "-" + snpkframe3["inj_total"].astype(str)+ "-" + snpkframe3["inj_f"].astype(str) + "-" + snpkframe3["kidnap_tot"].astype(str) + "-" + snpkframe3["kid_f"].astype(str) + "-" + snpkframe3["sex_as_tot"].astype(str) + "-" + snpkframe3["sex_f"].astype(str)')
 
 		# kondisi dimensi 5
 		if dimensi5_key:
@@ -415,6 +415,89 @@ def show_selection():
 			new_cols = ['key' + str(i) for i in df_key.columns]
 			df_key.columns = new_cols[:total_columns]
 
+			df_key_decode = df_key.copy()
+			df_key_decode
+
+			for index, row in df_key_decode.iterrows():
+				arr = []
+				arr_loc = []
+			#     print index, row
+				for each_col in row:
+					if (each_col != None):
+						splitCol = each_col.split("-")
+						if len(splitCol) == 2:
+							if (splitCol[0] == '1'):
+								arr.append("pada tahun " + splitCol[1])
+							elif (splitCol[0] == '2'):
+								arr.append("di provinsi " + splitCol[1])
+								arr_loc.append(splitCol[1])
+							elif splitCol[0] == '3':
+								arr.append("dengan aktor " + translate_actor(int(splitCol[1])))
+							elif splitCol[0] == '4':
+								arr.append("terdapat korban terbunuh, luka-luka, penculikan, pelecehan seksual atau bangunan rusak")
+							elif splitCol[0] == '5':
+								arr.append("dengan senjata " + translate_weapon(int(splitCol[1])))
+							elif splitCol[0] == '6':
+								arr.append("dengan jenis kekerasan " + translate_jenis_kek(int(splitCol[1])))
+							elif splitCol[0] == '7':
+								arr.append("dengan kategori tipe kekerasan " + translate_tipe_kekerasan(int(splitCol[1])))
+							elif splitCol[0] == '8':
+								arr.append("dengan bentuk kekerasan " + translate_bentuk_kekerasan(int(splitCol[1])))
+							elif splitCol[0] == '9':
+								arr.append("dengan meta jenis kekerasan " + translate_meta_kekerasan(int(splitCol[1])))
+						elif len(splitCol) == 3:
+							if (splitCol[0] == '1'):
+								arr.append("pada tahun " + splitCol[1])
+								arr.append("bulan " + translate_bulan(int(splitCol[2])))
+							elif (splitCol[0] == '2'):
+								arr.append("di provinsi " + splitCol[1])
+								arr.append("kabupaten " + splitCol[2])
+								arr_loc.append(splitCol[1])
+							elif splitCol[0] == '4':
+								arr.append("dengan dampak " + splitCol[1])
+								arr.append("dan dampak " + splitCol[2])
+							elif splitCol[0] == '3':
+								arr.append("dengan aktor 1 " + translate_actor(int(splitCol[1])))
+								arr.append("dan aktor 2 " + translate_actor(int(splitCol[2])))
+							elif splitCol[0] == '5':
+								arr.append("dengan senjata 1 " + translate_weapon(int(splitCol[1])))
+								arr.append("dan senjata 2 " + translate_weapon(int(splitCol[2])))
+						elif len(splitCol) == 4:
+							arr.append("terdapat korban")
+							if splitCol[1] == '1':
+								arr.append("terbunuh,")        
+							elif splitCol[2] == '1':
+								arr.append("luka-luka,")
+							elif splitCol[3] == '1':
+								arr.append("penculikan,")
+							elif splitCol[4] == '1':
+								arr.append("pelecehan seksual,")
+						elif len(splitCol) == 9:
+							arr.append("terdapat korban")
+							if splitCol[1] == '1':
+								arr.append("terbunuh,")        
+							if splitCol[2] == '1':
+								arr.append("luka-luka,")
+							if splitCol[3] == '1':
+								arr.append("penculikan,")
+							if splitCol[4] == '1':
+								arr.append("pelecehan seksual,")
+							if splitCol[5] == '1':
+								arr.append("terbunuh berjenis kelamin perempuan,")        
+							if splitCol[6] == '1':
+								arr.append("luka-luka berjenis kelamin perempuan,")
+							if splitCol[7] == '1':
+								arr.append("penculikan berjenis kelamin perempuan,")
+							if splitCol[8] == '1':
+								arr.append("pelecehan seksual berjenis kelamin perempuan,")
+								
+				combine_arr = ' '.join(arr)
+				df_key_decode.loc[index,'List'] = combine_arr
+				if arr_loc:
+					df_key_decode.loc[index,'Loc'] = ' '.join(arr_loc)
+				else:
+					df_key_decode.loc[index,'Loc'] = 'Nasional'
+		
 			dim2_list = list(rules.values())
 			df_values = pd.DataFrame(dim2_list)
 			df_values.rename(columns={0: 'first'}, inplace=True)
@@ -431,35 +514,121 @@ def show_selection():
 			new_cols = ['values' + str(i) for i in df_values_key.columns]
 			df_values_key.columns = new_cols[:total_columns_value]
 
-			result_join = pd.concat([df_key, df_values_key, df_values_conf], axis=1, join_axes=[df_key.index])
+			df_values_decode = df_values_key.copy()
 
-			def f(row):
-				for col in row.index:
-					if (row[col] is not None) & (not isinstance(row[col], float)):
-						if row[col][0] == '2':
-							a = row[col].split("-")
-							return a[1]
+			for index, row in df_values_decode.iterrows():
+				arr = []
+				arr_loc = []
 
-			result_join['Result'] = result_join.apply(f, axis=1)
+				for each_col in row:
+					if (each_col != None):
+						splitCol = each_col.split("-")
+						if len(splitCol) == 2:
+							if (splitCol[0] == '1'):
+								arr.append("pada tahun " + splitCol[1])
+							elif (splitCol[0] == '2'):
+								arr.append("di provinsi " + splitCol[1])
+								arr_loc.append(splitCol[1])
+							elif splitCol[0] == '3':
+								arr.append("dengan aktor " + translate_actor(int(splitCol[1])))
+							elif splitCol[0] == '4':
+								arr.append("terdapat korban terbunuh, luka-luka, penculikan, pelecehan seksual atau bangunan rusak")
+							elif splitCol[0] == '5':
+								arr.append("dengan senjata " + translate_weapon(int(splitCol[1])))
+							elif splitCol[0] == '6':
+								arr.append("dengan jenis kekerasan " + translate_jenis_kek(int(splitCol[1])))
+							elif splitCol[0] == '7':
+								arr.append("dengan kategori tipe kekerasan " + translate_tipe_kekerasan(int(splitCol[1])))
+							elif splitCol[0] == '8':
+								arr.append("dengan bentuk kekerasan " + translate_bentuk_kekerasan(int(splitCol[1])))
+							elif splitCol[0] == '9':
+								arr.append("dengan meta jenis kekerasan " + translate_meta_kekerasan(int(splitCol[1])))
+						elif len(splitCol) == 3:
+							if (splitCol[0] == '1'):
+								arr.append("pada tahun " + splitCol[1])
+								arr.append("bulan " + translate_bulan(int(splitCol[2])))
+							elif (splitCol[0] == '2'):
+								arr.append("di provinsi " + splitCol[1])
+								arr.append("kabupaten " + splitCol[2])
+								arr_loc.append(splitCol[1])
+							elif splitCol[0] == '4':
+								arr.append("dengan dampak " + splitCol[1])
+								arr.append("dan dampak " + splitCol[2])
+							elif splitCol[0] == '3':
+								arr.append("dengan aktor 1 " + translate_actor(int(splitCol[1])))
+								arr.append("dan aktor 2 " + translate_actor(int(splitCol[2])))
+							elif splitCol[0] == '5':
+								arr.append("dengan senjata 1 " + translate_weapon(int(splitCol[1])))
+								arr.append("dan senjata 2 " + translate_weapon(int(splitCol[2])))
+						elif len(splitCol) == 4:
+							arr.append("terdapat korban")
+							if splitCol[1] == '1':
+								arr.append("terbunuh,")        
+							elif splitCol[2] == '1':
+								arr.append("luka-luka,")
+							elif splitCol[3] == '1':
+								arr.append("penculikan,")
+							elif splitCol[4] == '1':
+								arr.append("pelecehan seksual,")
+						elif len(splitCol) == 9:
+							arr.append("terdapat korban")
+							if splitCol[1] == '1':
+								arr.append("terbunuh,")        
+							if splitCol[2] == '1':
+								arr.append("luka-luka,")
+							if splitCol[3] == '1':
+								arr.append("penculikan,")
+							if splitCol[4] == '1':
+								arr.append("pelecehan seksual,")
+							if splitCol[5] == '1':
+								arr.append("terbunuh berjenis kelamin perempuan,")        
+							if splitCol[6] == '1':
+								arr.append("luka-luka berjenis kelamin perempuan,")
+							if splitCol[7] == '1':
+								arr.append("penculikan berjenis kelamin perempuan,")
+							if splitCol[8] == '1':
+								arr.append("pelecehan seksual berjenis kelamin perempuan,")
+								
+				combine_arr = ' '.join(arr)
+				# print combine_arr
+				df_values_decode.loc[index,'ListValues'] = 'cenderung terjadi ' + combine_arr
+				if arr_loc:
+					df_values_decode.loc[index,'LocValues'] = ' '.join(arr_loc)
+				else:
+					df_values_decode.loc[index,'LocValues'] = 'Nasional'
 
-			result_join['Result'] = result_join['Result'].fillna('Nasional')
+			print df_values_decode
 
-			group_true = result_join.Result.notnull()
-			filter_result = result_join[group_true]
+			df_values_conf = (df_values_conf*100).round(2)
 
-			html_filter_result = filter_result.groupby(['Result'])
+			result_join_decode = pd.concat([df_key_decode, df_values_decode, df_values_conf], axis=1, join_axes=[df_key.index])
+			result_join_decode['Result']=result_join_decode['confident'].astype(str)+'% Kekerasan terjadi '+result_join_decode['List']+' '+result_join_decode['ListValues']
 
-			out_filter_result = (filter_result.groupby(['Result'])
-								 .apply(lambda x: x.to_dict('r'))
-								 .reset_index()
-								 .rename(columns={0: 'Value'})
-								 .to_json(orient='records'))
+			def check_loc(row):
+				if row.Loc == row.LocValues:
+					return 'Nasional'
+				elif (row.Loc == 'Nasional') & (row.LocValues != 'Nasional'):
+					return row.LocValues
+				elif (row.Loc != 'Nasional') & (row.LocValues == 'Nasional'):
+					return row.Loc
+
+			result_join_decode['ResultLoc'] = result_join_decode.apply(check_loc, axis=1)
+
+			result_join_print = result_join_decode[['Result', 'ResultLoc']]
+
+			html_filter_result = result_join_print.groupby(['ResultLoc'])
+
+			out_filter_result = (result_join_print.groupby(['ResultLoc'])
+				.apply(lambda x: x.to_dict('r'))
+				.reset_index()
+				.rename(columns={0:'Value'})
+				.to_json(orient='records'))
 
 			converted_data = json.loads(out_filter_result)
 			national_data = {}
 
 			for v in converted_data:
-				if v['Result'] == 'Nasional':
+				if v['ResultLoc'] == 'Nasional':
 					national_data = v
 				else:
 					html = json2html.convert(json=v,
@@ -468,6 +637,44 @@ def show_selection():
 
 			print_html = json2html.convert(json=national_data,
 										   table_attributes="id=\"info-table\" class=\"table\"")
+
+			# result_join = pd.concat([df_key, df_values_key, df_values_conf], axis=1, join_axes=[df_key.index])
+
+			# def f(row):
+			# 	for col in row.index:
+			# 		if (row[col] is not None) & (not isinstance(row[col], float)):
+			# 			if row[col][0] == '2':
+			# 				a = row[col].split("-")
+			# 				return a[1]
+
+			# result_join['Result'] = result_join.apply(f, axis=1)
+
+			# result_join['Result'] = result_join['Result'].fillna('Nasional')
+
+			# group_true = result_join.Result.notnull()
+			# filter_result = result_join[group_true]
+
+			# html_filter_result = filter_result.groupby(['Result'])
+
+			# out_filter_result = (filter_result.groupby(['Result'])
+			# 					 .apply(lambda x: x.to_dict('r'))
+			# 					 .reset_index()
+			# 					 .rename(columns={0: 'Value'})
+			# 					 .to_json(orient='records'))
+
+			# converted_data = json.loads(out_filter_result)
+			# national_data = {}
+
+			# for v in converted_data:
+			# 	if v['Result'] == 'Nasional':
+			# 		national_data = v
+			# 	else:
+			# 		html = json2html.convert(json=v,
+			# 								 table_attributes="id=\"info-table\" class=\"table\"")
+			# 		v['html'] = html
+
+			# print_html = json2html.convert(json=national_data,
+			# 							   table_attributes="id=\"info-table\" class=\"table\"")
 		else:
 			converted_data = []
 			total_rules = 0
@@ -475,7 +682,6 @@ def show_selection():
 			out_filter_result = "Tidak ada rules"
 
 	elif request.form.get('action') == 'SingleDimension':
-
 		#data yang diambil hanya data kekerasan terhadap perempuan (EKSTRAKSI DATA)
 		snpkframe = snpkframe.loc[(snpkframe["kil_f"] > 0) | (snpkframe["inj_f"] > 0) | (snpkframe["kid_f"] > 0) | (snpkframe["sex_f"] > 0)]
 
@@ -763,16 +969,16 @@ def show_selection():
 							a = row[col].split("-")
 							return a[2]
 
-			result_join['Result'] = result_join.apply(f, axis=1)
+			result_join['ResultLoc'] = result_join.apply(f, axis=1)
 
-			result_join['Result'] = result_join['Result'].fillna('Nasional')
+			result_join['ResultLoc'] = result_join['ResultLoc'].fillna('Nasional')
 
-			group_true = result_join.Result.notnull()
+			group_true = result_join.ResultLoc.notnull()
 			filter_result = result_join[group_true]
 
-			html_filter_result = filter_result.groupby(['Result'])
+			html_filter_result = filter_result.groupby(['ResultLoc'])
 
-			out_filter_result = (filter_result.groupby(['Result'])
+			out_filter_result = (filter_result.groupby(['ResultLoc'])
 								 .apply(lambda x: x.to_dict('r'))
 								 .reset_index()
 								 .rename(columns={0: 'Value'})
@@ -782,7 +988,7 @@ def show_selection():
 			national_data = {}
 
 			for v in converted_data:
-				if v['Result'] == 'Nasional':
+				if v['ResultLoc'] == 'Nasional':
 					national_data = v
 				else:
 					html = json2html.convert(json=v,

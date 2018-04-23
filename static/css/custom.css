@@ -551,6 +551,12 @@ input:focus, textarea:focus {
 .table-nasional .table tbody tr:first-child {
   background: #6098e0;
 }
+.table-nasional .table tbody tr td:first-child {
+  display: none;
+}
+.table-nasional .table tbody tr th:first-child{
+  display: none !important;
+}
 .table-nasional .table tbody tr:first-child td {
   text-align: center;
   text-transform: uppercase;
@@ -569,6 +575,7 @@ input:focus, textarea:focus {
 }
 .table-nasional .table tbody tr td table tr:first-child {
   background: #fff;
+  display: none !important;
 }
 .table-nasional .table tbody tr td table tr:first-child th {
   display: table-cell;

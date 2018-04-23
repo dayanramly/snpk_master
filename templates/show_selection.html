@@ -48,7 +48,7 @@
 		<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12 text-center">
 
 			{% for d in converted_data %}
-			<span class="label label-primary label-light-blue"> {{ d['Result'] }} ({{ d['Value']|length }})</span>
+			<span class="label label-primary label-light-blue"> {{ d['ResultLoc'] }} ({{ d['Value']|length }})</span>
 			{% endfor %}
 
 		</div>
@@ -75,7 +75,7 @@
 
 	<div class="row national-table-row">
 		<div class="col-md-12">
-			<h3>Data Kekerasan Nasional</h3>
+			<h3>Analisis Asosiasi Kekerasan Nasional</h3>
 			<div class="table-responsive table-nasional">
 				{{ data|safe }}
 			</div>
@@ -84,7 +84,7 @@
 </div>
 
 {% for d in converted_data %}
-<div class="modal fade" id="modal-{{ d['Result'].lower().replace(' ', '') }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+<div class="modal fade" id="modal-{{ d['ResultLoc'].lower().replace(' ', '') }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
 	<div class="modal-dialog modal-lg snpk-modal" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -290,6 +290,7 @@
     };
 
     $(function () {
+    	// console.log({{converted_data}})
     	var raw = {{raw_data | safe}}
     	// var time_exec = {{time_exe}}
     	console.log(raw)
