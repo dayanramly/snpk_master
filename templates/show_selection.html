@@ -54,7 +54,16 @@
 		</div>
 	</div>
 </div>
-
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="myDiv"></div>
+        </div>
+        <div class="col-md-6">
+            <div id="provDiv"></div>
+        </div>
+    </div>
+</div>
 <div class="container-fluid snpk-selection-result">
 	<div class="row result-row">
 		<div class="col-md-6 col-md-offset-3 result-row-container">
@@ -113,6 +122,7 @@
 </footer>
 
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/plotly-latest.min.js') }}"></script>
 <script type="text/javascript">
 
 	var simplemaps_countrymap_mapdata = {
@@ -290,18 +300,21 @@
     };
 
     $(function () {
-    	// console.log({{converted_data}})
-    	var raw = {{raw_data | safe}}
+        var raw = {{raw_data | safe}}
+        var graphs = {{tahun_data | safe}}
+        var graphProv = {{provinsi_data | safe}}
     	// var time_exec = {{time_exe}}
-    	console.log(raw)
-    	// alert("execution time: " + time_exec + " seconds");
-    	simplemaps_countrymap.hooks.click_state = function (id) {
-    		name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);
-    		simplemaps_countrymap_mapdata.state_specific[id].color='red';
-    		$('#modal-' + name).modal('show');
-    	}
+    	console.log(graphProv)
+        // Plotly.newPlot('myDiv', data);
+        Plotly.newPlot('myDiv',graphs,{});
+        Plotly.newPlot('provDiv',graphProv,{});
+        simplemaps_countrymap.hooks.click_state = function (id) {
+          name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);
+          simplemaps_countrymap_mapdata.state_specific[id].color='red';
+          $('#modal-' + name).modal('show');
+      }
 
-    })
+  })
 
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/countrymap.js') }}"></script>

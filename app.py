@@ -4,11 +4,20 @@ from os import environ, listdir, remove
 from os.path import isfile, join
 
 import pandas as pd
+import numpy as np
 import pyfpgrowth
+import plotly
+import plotly.plotly as py
+import plotly.graph_objs as gox
 from flask import Flask, render_template, redirect, url_for, request, flash
 from json2html import *
 from werkzeug.utils import secure_filename
+from itertools import chain
+from itertools import combinations
+from collections import defaultdict
+from plotly.graph_objs import *
 import time
+import math
 
 from util import translate_bulan, translate_actor, translate_weapon, translate_jenis_kek, translate_tipe_kekerasan, \
 	translate_bentuk_kekerasan, translate_meta_kekerasan
@@ -391,6 +400,13 @@ def show_selection():
 		else:
 			snpkframe3 = eval('snpkframe2[' + rules_filter + ']')
 
+		listgroupby = {}
+		for index, x in enumerate(con_dimensi):
+			con_split = x.split(',')
+			for dim in con_split:
+				dim = dim.replace('"', '')
+				listgroupby[dim] = eval('snpkframe3["'+dim+'"].groupby(snpkframe3["'+dim+'"]).count()')
+
 		for index, x in enumerate(con_dimensi_enc):
 			snpkframe3["dim" + str(index + 1)] = eval(x)
 
@@ -420,7 +436,18 @@ def show_selection():
 
 			for index, row in df_key_decode.iterrows():
 				arr = []
+				arr_tahun = []
+				arr_bulan = []
 				arr_loc = []
+				arr_kab = []
+				arr_act1 = []
+				arr_act2 = []
+				arr_weap1 = []
+				arr_weap2 = []
+				arr_jkek = []
+				arr_katkek = []
+				arr_benkek = []
+				arr_metkek = []
 			#     print index, row
 				for each_col in row:
 					if (each_col != None):
@@ -428,40 +455,54 @@ def show_selection():
 						if len(splitCol) == 2:
 							if (splitCol[0] == '1'):
 								arr.append("pada tahun " + splitCol[1])
+								arr_tahun.append(splitCol[1])
 							elif (splitCol[0] == '2'):
 								arr.append("di provinsi " + splitCol[1])
 								arr_loc.append(splitCol[1])
 							elif splitCol[0] == '3':
 								arr.append("dengan aktor " + translate_actor(int(splitCol[1])))
+								arr_act1.append(translate_actor(int(splitCol[1])))
 							elif splitCol[0] == '4':
 								arr.append("terdapat korban terbunuh, luka-luka, penculikan, pelecehan seksual atau bangunan rusak")
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata " + translate_weapon(int(splitCol[1])))
+								arr_weap1.append(translate_actor(int(splitCol[1])))
 							elif splitCol[0] == '6':
 								arr.append("dengan jenis kekerasan " + translate_jenis_kek(int(splitCol[1])))
+								arr_jkek.append(translate_jenis_kek(int(splitCol[1])))
 							elif splitCol[0] == '7':
 								arr.append("dengan kategori tipe kekerasan " + translate_tipe_kekerasan(int(splitCol[1])))
+								arr_katkek.append(translate_tipe_kekerasan(int(splitCol[1])))
 							elif splitCol[0] == '8':
 								arr.append("dengan bentuk kekerasan " + translate_bentuk_kekerasan(int(splitCol[1])))
+								arr_benkek.append(translate_bentuk_kekerasan(int(splitCol[1])))
 							elif splitCol[0] == '9':
 								arr.append("dengan meta jenis kekerasan " + translate_meta_kekerasan(int(splitCol[1])))
+								arr_metkek.append(translate_meta_kekerasan(int(splitCol[1])))
 						elif len(splitCol) == 3:
 							if (splitCol[0] == '1'):
 								arr.append("pada tahun " + splitCol[1])
 								arr.append("bulan " + translate_bulan(int(splitCol[2])))
+								arr_tahun.append(splitCol[1])
+								arr_bulan.append(translate_bulan(int(splitCol[2])))
 							elif (splitCol[0] == '2'):
 								arr.append("di provinsi " + splitCol[1])
 								arr.append("kabupaten " + splitCol[2])
 								arr_loc.append(splitCol[1])
-							elif splitCol[0] == '4':
-								arr.append("dengan dampak " + splitCol[1])
-								arr.append("dan dampak " + splitCol[2])
+								arr_kab.append(splitCol[2])
 							elif splitCol[0] == '3':
 								arr.append("dengan aktor 1 " + translate_actor(int(splitCol[1])))
 								arr.append("dan aktor 2 " + translate_actor(int(splitCol[2])))
+								arr_act1.append(translate_actor(int(splitCol[1])))
+								arr_act2.append(translate_actor(int(splitCol[2])))
+							elif splitCol[0] == '4':
+								arr.append("dengan dampak " + splitCol[1])
+								arr.append("dan dampak " + splitCol[2])
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata 1 " + translate_weapon(int(splitCol[1])))
 								arr.append("dan senjata 2 " + translate_weapon(int(splitCol[2])))
+								arr_weap1.append(translate_weapon(int(splitCol[1])))
+								arr_weap2.append(translate_weapon(int(splitCol[2])))
 						elif len(splitCol) == 4:
 							arr.append("terdapat korban")
 							if splitCol[1] == '1':
@@ -492,11 +533,36 @@ def show_selection():
 								arr.append("pelecehan seksual berjenis kelamin perempuan,")
 								
 				combine_arr = ' '.join(arr)
+			#     print combine_arr
 				df_key_decode.loc[index,'List'] = combine_arr
+				
+				if arr_tahun:
+					df_key_decode.loc[index,'List_tahun'] = ' '.join(arr_tahun)
+				if arr_bulan:
+					df_key_decode.loc[index,'List_bulan'] = ' '.join(arr_bulan)
+				if arr_kab:
+					df_key_decode.loc[index,'List_kabupaten'] = ' '.join(arr_kab)
+				if arr_act1: 
+					df_key_decode.loc[index,'List_act1'] = ' '.join(arr_act1)
+				if arr_act2:
+					df_key_decode.loc[index,'List_act2'] = ' '.join(arr_act2)
+				if arr_weap1: 
+					df_key_decode.loc[index,'List_weap1'] = ' '.join(arr_weap1)
+				if arr_weap2:
+					df_key_decode.loc[index,'List_weap2'] = ' '.join(arr_weap2)
+				if arr_jkek:
+					df_key_decode.loc[index,'List_jenis_kek'] = ' '.join(arr_jkek)
+				if arr_katkek: 
+					df_key_decode.loc[index,'List_kat_kek'] = ' '.join(arr_katkek)
+				if arr_benkek:
+					df_key_decode.loc[index,'List_ben_kek'] = ' '.join(arr_benkek)
+				if arr_metkek:
+					df_key_decode.loc[index,'List_met_kek'] = ' '.join(arr_metkek)
 				if arr_loc:
 					df_key_decode.loc[index,'Loc'] = ' '.join(arr_loc)
 				else:
 					df_key_decode.loc[index,'Loc'] = 'Nasional'
+		
 		
 			dim2_list = list(rules.values())
 			df_values = pd.DataFrame(dim2_list)
@@ -518,48 +584,72 @@ def show_selection():
 
 			for index, row in df_values_decode.iterrows():
 				arr = []
+				arr_tahun = []
+				arr_bulan = []
 				arr_loc = []
-
+				arr_kab = []
+				arr_act1 = []
+				arr_act2 = []
+				arr_weap1 = []
+				arr_weap2 = []
+				arr_jkek = []
+				arr_katkek = []
+				arr_benkek = []
+				arr_metkek = []
 				for each_col in row:
 					if (each_col != None):
 						splitCol = each_col.split("-")
 						if len(splitCol) == 2:
 							if (splitCol[0] == '1'):
 								arr.append("pada tahun " + splitCol[1])
+								arr_tahun.append(splitCol[1])
 							elif (splitCol[0] == '2'):
 								arr.append("di provinsi " + splitCol[1])
 								arr_loc.append(splitCol[1])
 							elif splitCol[0] == '3':
 								arr.append("dengan aktor " + translate_actor(int(splitCol[1])))
+								arr_act1.append(translate_actor(int(splitCol[1])))
 							elif splitCol[0] == '4':
 								arr.append("terdapat korban terbunuh, luka-luka, penculikan, pelecehan seksual atau bangunan rusak")
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata " + translate_weapon(int(splitCol[1])))
+								arr_weap1.append(translate_actor(int(splitCol[1])))
 							elif splitCol[0] == '6':
 								arr.append("dengan jenis kekerasan " + translate_jenis_kek(int(splitCol[1])))
+								arr_jkek.append(translate_jenis_kek(int(splitCol[1])))
 							elif splitCol[0] == '7':
 								arr.append("dengan kategori tipe kekerasan " + translate_tipe_kekerasan(int(splitCol[1])))
+								arr_katkek.append(translate_tipe_kekerasan(int(splitCol[1])))
 							elif splitCol[0] == '8':
 								arr.append("dengan bentuk kekerasan " + translate_bentuk_kekerasan(int(splitCol[1])))
+								arr_benkek.append(translate_bentuk_kekerasan(int(splitCol[1])))
 							elif splitCol[0] == '9':
 								arr.append("dengan meta jenis kekerasan " + translate_meta_kekerasan(int(splitCol[1])))
+								arr_metkek.append(translate_meta_kekerasan(int(splitCol[1])))
 						elif len(splitCol) == 3:
 							if (splitCol[0] == '1'):
 								arr.append("pada tahun " + splitCol[1])
 								arr.append("bulan " + translate_bulan(int(splitCol[2])))
+								arr_tahun.append(splitCol[1])
+								arr_bulan.append(translate_bulan(int(splitCol[2])))
 							elif (splitCol[0] == '2'):
 								arr.append("di provinsi " + splitCol[1])
 								arr.append("kabupaten " + splitCol[2])
 								arr_loc.append(splitCol[1])
-							elif splitCol[0] == '4':
-								arr.append("dengan dampak " + splitCol[1])
-								arr.append("dan dampak " + splitCol[2])
+								arr_kab.append(splitCol[2])
 							elif splitCol[0] == '3':
 								arr.append("dengan aktor 1 " + translate_actor(int(splitCol[1])))
 								arr.append("dan aktor 2 " + translate_actor(int(splitCol[2])))
+								arr_act1.append(translate_actor(int(splitCol[1])))
+								arr_act2.append(translate_actor(int(splitCol[2])))
+							elif splitCol[0] == '4':
+								arr.append("dengan dampak " + splitCol[1])
+								arr.append("dan dampak " + splitCol[2])
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata 1 " + translate_weapon(int(splitCol[1])))
 								arr.append("dan senjata 2 " + translate_weapon(int(splitCol[2])))
+								arr_weap1.append(translate_weapon(int(splitCol[1])))
+								arr_weap2.append(translate_weapon(int(splitCol[2])))
 						elif len(splitCol) == 4:
 							arr.append("terdapat korban")
 							if splitCol[1] == '1':
@@ -590,20 +680,43 @@ def show_selection():
 								arr.append("pelecehan seksual berjenis kelamin perempuan,")
 								
 				combine_arr = ' '.join(arr)
-				# print combine_arr
 				df_values_decode.loc[index,'ListValues'] = 'cenderung terjadi ' + combine_arr
+				
+				if arr_tahun:
+					df_values_decode.loc[index,'tahun'] = ' '.join(arr_tahun)
+				if arr_bulan:
+					df_values_decode.loc[index,'bulan'] = ' '.join(arr_bulan)
+				if arr_kab:
+					df_values_decode.loc[index,'kabupaten'] = ' '.join(arr_kab)
+				if arr_act1: 
+					df_values_decode.loc[index,'act1'] = ' '.join(arr_act1)
+				if arr_act2:
+					df_values_decode.loc[index,'act2'] = ' '.join(arr_act2)
+				if arr_weap1: 
+					df_values_decode.loc[index,'weap1'] = ' '.join(arr_weap1)
+				if arr_weap2:
+					df_values_decode.loc[index,'weap2'] = ' '.join(arr_weap2)
+				if arr_jkek:
+					df_values_decode.loc[index,'jenis_kek'] = ' '.join(arr_jkek)
+				if arr_katkek: 
+					df_values_decode.loc[index,'kat_kek'] = ' '.join(arr_katkek)
+				if arr_benkek:
+					df_values_decode.loc[index,'ben_kek'] = ' '.join(arr_benkek)
+				if arr_metkek:
+					df_values_decode.loc[index,'met_kek'] = ' '.join(arr_metkek)
 				if arr_loc:
 					df_values_decode.loc[index,'LocValues'] = ' '.join(arr_loc)
 				else:
 					df_values_decode.loc[index,'LocValues'] = 'Nasional'
 
-			print df_values_decode
-
+			# change confident value to percent
 			df_values_conf = (df_values_conf*100).round(2)
 
+			# Merge descriptive rules
 			result_join_decode = pd.concat([df_key_decode, df_values_decode, df_values_conf], axis=1, join_axes=[df_key.index])
 			result_join_decode['Result']=result_join_decode['confident'].astype(str)+'% Kekerasan terjadi '+result_join_decode['List']+' '+result_join_decode['ListValues']
 
+			# join two column with has same value
 			def check_loc(row):
 				if row.Loc == row.LocValues:
 					return 'Nasional'
@@ -611,9 +724,145 @@ def show_selection():
 					return row.LocValues
 				elif (row.Loc != 'Nasional') & (row.LocValues == 'Nasional'):
 					return row.Loc
+				
+			def check_tahun(row):
+				if (isinstance(row.List_tahun, str)) & (isinstance(row.tahun, float)):
+					return row.List_tahun
+				elif (isinstance(row.tahun, str)) & (isinstance(row.List_tahun, float)):
+					return row.tahun
+				else:
+					return np.nan
+				
+			def check_bulan(row):
+				if (isinstance(row.List_bulan, str)) & (isinstance(row.bulan, float)):
+					return row.List_bulan
+				elif (isinstance(row.bulan, str)) & (isinstance(row.List_bulan, float)):
+					return row.bulan
+				else:
+					return np.nan
+				
+			def check_kab(row):
+				if (isinstance(row.List_kabupaten, str)) & (isinstance(row.kabupaten, float)):
+					return row.List_kabupaten
+				elif (isinstance(row.kabupaten, str)) & (isinstance(row.List_kabupaten, float)):
+					return row.kabupaten
+				else:
+					return np.nan
+				
+			def check_act1(row):
+				if (isinstance(row.List_act1, str)) & (isinstance(row.act1, float)):
+					return row.List_act1
+				elif (isinstance(row.act1, str)) & (isinstance(row.List_act1, float)):
+					return row.act1
+				else:
+					return np.nan
+				
+			def check_act2(row):
+				if (isinstance(row.List_act2, str)) & (isinstance(row.act2, float)):
+					return row.List_act2
+				elif (isinstance(row.act2, str)) & (isinstance(row.List_act2, float)):
+					return row.act2
+				else:
+					return np.nan
+				
+			def check_weap1(row):
+				if (isinstance(row.List_weap1, str)) & (isinstance(row.weap1, float)):
+					return row.List_weap1
+				elif (isinstance(row.weap1, str)) & (isinstance(row.List_weap1, float)):
+					return row.weap1
+				else:
+					return np.nan
+				
+			def check_weap2(row):
+				if (isinstance(row.List_weap2, str)) & (isinstance(row.weap2, float)):
+					return row.List_weap2
+				elif (isinstance(row.weap2, str)) & (isinstance(row.List_weap2, float)):
+					return row.weap2
+				else:
+					return np.nan
 
+			# apply function for join two column
 			result_join_decode['ResultLoc'] = result_join_decode.apply(check_loc, axis=1)
+			result_join_decode['ResultTahun'] = result_join_decode.apply(check_tahun, axis=1)
+			result_join_decode['ResultBulan'] = result_join_decode.apply(check_bulan, axis=1)
+			result_join_decode['ResultKab'] = result_join_decode.apply(check_kab, axis=1)
+			result_join_decode['ResultActor1'] = result_join_decode.apply(check_act1, axis=1)
+			result_join_decode['ResultActor2'] = result_join_decode.apply(check_act2, axis=1)
+			result_join_decode['ResultWeap1'] = result_join_decode.apply(check_weap1, axis=1)
+			result_join_decode['ResultWeap2'] = result_join_decode.apply(check_weap2, axis=1)
+			# dataframe for table
+			result_join_count = result_join_decode[['ResultTahun', 'ResultBulan', 'ResultLoc', 'ResultKab', 'ResultActor1', 'ResultActor2', 'ResultWeap1', 'ResultWeap2']]
+			# convert column ResultTahun to int
+			result_join_count['ResultTahun'] = pd.to_numeric(result_join_count['ResultTahun'], errors='coerce')
 
+			group_tahun = result_join_count['ResultTahun'].groupby(result_join_count['ResultTahun']).count()
+			group_bulan = result_join_count['ResultBulan'].groupby(result_join_count['ResultBulan']).count()
+			group_prov = result_join_count['ResultLoc'].groupby(result_join_count['ResultLoc']).count()
+			group_kab = result_join_count['ResultKab'].groupby(result_join_count['ResultKab']).count()
+
+			# function to merge all data and rules in dictionary
+			dict_tahun = defaultdict(list)
+			for k, v in chain(group_tahun.items(), listgroupby['tahun'].items()):
+				dict_tahun[k].append(v)
+				
+			dict_bulan = defaultdict(list)
+			for k, v in chain(group_bulan.items(), listgroupby['bulan'].items()):
+				dict_bulan[k].append(v)
+				
+			dict_prov = defaultdict(list)
+			for k, v in chain(group_prov.items(), listgroupby['provinsi'].items()):
+				dict_prov[k].append(v)
+
+			dict_kab = defaultdict(list)
+			for k, v in chain(group_kab.items(), listgroupby['kabupaten'].items()):
+				dict_kab[k].append(v)
+
+			# change to dataframe and fill nan values with 0
+			tahun_to_df = pd.DataFrame.from_dict(dict_tahun, orient='index').reset_index().fillna(0)
+			kab_to_df = pd.DataFrame.from_dict(dict_kab, orient='index').reset_index().fillna(0)
+			prov_to_df = pd.DataFrame.from_dict(dict_prov, orient='index').reset_index().fillna(0)
+
+			# change column name
+			tahun_to_df.columns = ['nama', 'rules', 'semua']   
+			kab_to_df.columns = ['nama', 'rules', 'semua']   
+			prov_to_df.columns = ['nama', 'rules', 'semua']
+			# chart tahun
+			tahun_semua = Bar(x=tahun_to_df.nama,
+				y=tahun_to_df.semua,
+				name='Semua Data',
+				marker=dict(color='#ffcdd2'))
+
+			tahun_rules = Bar(x=tahun_to_df.nama,
+				y=tahun_to_df.rules,
+				name='Rules Yang Didapat',
+				marker=dict(color='#A2D5F2'))
+
+			data = [tahun_semua, tahun_rules]
+			layout = Layout(title="Data Tahun",
+							yaxis=dict(title='Jumlah Data'))
+			fig = Figure(data=data, layout=layout)
+
+			tahunJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+			# chart provinsi
+			provinsi_semua = Bar(x=prov_to_df.nama,
+				y=prov_to_df.semua,
+				name='Semua Data',
+				marker=dict(color='#ffcdd2'))
+
+			provinsi_rules = Bar(x=prov_to_df.nama,
+				y=prov_to_df.rules,
+				name='Rules Yang Didapat',
+				marker=dict(color='#A2D5F2'))
+
+			data = [provinsi_semua, provinsi_rules]
+			layout = Layout(title="Data Provinsi",
+							yaxis=dict(title='Jumlah Data'))
+			prv = Figure(data=data, layout=layout)
+			
+			provJSON = json.dumps(prv, cls=plotly.utils.PlotlyJSONEncoder)
+
+			# dataframe for map
+			result_join_decode['ResultLoc'] = result_join_decode.apply(check_loc, axis=1)
 			result_join_print = result_join_decode[['Result', 'ResultLoc']]
 
 			html_filter_result = result_join_print.groupby(['ResultLoc'])
@@ -1007,7 +1256,7 @@ def show_selection():
 	timer = (time.time() - start_time)
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
-	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules)
+	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, kabupaten_data=kab_to_df.as_matrix(), provinsi_data=provJSON, tahun_data=tahunJSON)
 
 @app.route('/selection')
 def load_selection():
