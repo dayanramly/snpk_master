@@ -608,3 +608,10 @@ input:focus, textarea:focus {
 .snpk-modal .modal-body {
   padding-top: 0;
 }
+.row-button-charts{
+  padding: 50px 50px 0;
+}
+.row-button-charts .button-charts .btn-green{
+  margin-bottom: 10px;
+  margin-right: 10px;
+}
