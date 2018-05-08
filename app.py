@@ -118,7 +118,7 @@ def selected_files():
 		'url_path': request.args.getlist('filename')
 	}
 
-	data = json.dumps(data)
+	# data = json.dumps(data)
 
 	return render_template('selection.html', rows=data)
 
@@ -447,7 +447,8 @@ def show_selection():
 
 		# mencari rules dari pattern yang telah dibuat
 		rules = pyfpgrowth.generate_association_rules(patterns, min_conf)
-
+		
+		timer = (time.time() - start_time)
 		#jika terdapat rules yang di generate
 		if rules:
 			total_rules = len(rules)
@@ -564,29 +565,51 @@ def show_selection():
 				combine_arr = ' '.join(arr)
 			#     print combine_arr
 				df_key_decode.loc[index,'List'] = combine_arr
-				
+					
 				if arr_tahun:
 					df_key_decode.loc[index,'List_tahun'] = ' '.join(arr_tahun)
+				else:
+					df_key_decode.loc[index,'List_tahun'] = 0
 				if arr_bulan:
 					df_key_decode.loc[index,'List_bulan'] = ' '.join(arr_bulan)
+				else:
+					df_key_decode.loc[index,'List_bulan'] = np.nan
 				if arr_kab:
 					df_key_decode.loc[index,'List_kabupaten'] = ' '.join(arr_kab)
+				else:
+					df_key_decode.loc[index,'List_kabupaten'] = np.nan
 				if arr_act1: 
 					df_key_decode.loc[index,'List_act1'] = ' '.join(arr_act1)
+				else:
+					df_key_decode.loc[index,'List_act1'] = np.nan
 				if arr_act2:
 					df_key_decode.loc[index,'List_act2'] = ' '.join(arr_act2)
+				else:
+					df_key_decode.loc[index,'List_act2'] = np.nan
 				if arr_weap1: 
 					df_key_decode.loc[index,'List_weap1'] = ' '.join(arr_weap1)
+				else:
+					df_key_decode.loc[index,'List_weap1'] = np.nan
 				if arr_weap2:
 					df_key_decode.loc[index,'List_weap2'] = ' '.join(arr_weap2)
+				else:
+					df_key_decode.loc[index,'List_weap2'] = np.nan
 				if arr_jkek:
 					df_key_decode.loc[index,'List_jenis_kek'] = ' '.join(arr_jkek)
+				else:
+					df_key_decode.loc[index,'List_jenis_kek'] = np.nan
 				if arr_katkek: 
 					df_key_decode.loc[index,'List_kat_kek'] = ' '.join(arr_katkek)
+				else:
+					df_key_decode.loc[index,'List_kat_kek'] = np.nan
 				if arr_benkek:
 					df_key_decode.loc[index,'List_ben_kek'] = ' '.join(arr_benkek)
+				else:
+					df_key_decode.loc[index,'List_ben_kek'] = np.nan
 				if arr_metkek:
 					df_key_decode.loc[index,'List_met_kek'] = ' '.join(arr_metkek)
+				else:
+					df_key_decode.loc[index,'List_met_kek'] = np.nan
 				if arr_loc:
 					df_key_decode.loc[index,'Loc'] = ' '.join(arr_loc)
 				else:
@@ -712,29 +735,51 @@ def show_selection():
 				combine_arr = ' '.join(arr)
 			#     print combine_arr
 				df_values_decode.loc[index,'ListValues'] = 'cenderung terjadi ' + combine_arr
-				
+			#     print arr_tahun
 				if arr_tahun:
 					df_values_decode.loc[index,'tahun'] = ' '.join(arr_tahun)
+				else:
+					df_values_decode.loc[index,'tahun'] = 0
 				if arr_bulan:
 					df_values_decode.loc[index,'bulan'] = ' '.join(arr_bulan)
+				else:
+					df_values_decode.loc[index,'bulan'] = np.nan
 				if arr_kab:
 					df_values_decode.loc[index,'kabupaten'] = ' '.join(arr_kab)
+				else:
+					df_values_decode.loc[index,'kabupaten'] = np.nan
 				if arr_act1: 
 					df_values_decode.loc[index,'act1'] = ' '.join(arr_act1)
+				else:
+					df_values_decode.loc[index,'act1'] = np.nan
 				if arr_act2:
 					df_values_decode.loc[index,'act2'] = ' '.join(arr_act2)
+				else:
+					df_values_decode.loc[index,'act2'] = np.nan
 				if arr_weap1: 
 					df_values_decode.loc[index,'weap1'] = ' '.join(arr_weap1)
+				else:
+					df_values_decode.loc[index,'weap1'] = np.nan
 				if arr_weap2:
 					df_values_decode.loc[index,'weap2'] = ' '.join(arr_weap2)
+				else:
+					df_values_decode.loc[index,'weap2'] = np.nan
 				if arr_jkek:
 					df_values_decode.loc[index,'jenis_kek'] = ' '.join(arr_jkek)
+				else:
+					df_values_decode.loc[index,'jenis_kek'] = np.nan
 				if arr_katkek: 
 					df_values_decode.loc[index,'kat_kek'] = ' '.join(arr_katkek)
+				else:
+					df_values_decode.loc[index,'kat_kek'] = np.nan
 				if arr_benkek:
 					df_values_decode.loc[index,'ben_kek'] = ' '.join(arr_benkek)
+				else:
+					df_values_decode.loc[index,'ben_kek'] = np.nan
 				if arr_metkek:
 					df_values_decode.loc[index,'met_kek'] = ' '.join(arr_metkek)
+				else:
+					df_values_decode.loc[index,'met_kek'] = np.nan
 				if arr_loc:
 					df_values_decode.loc[index,'LocValues'] = ' '.join(arr_loc)
 				else:
@@ -757,7 +802,12 @@ def show_selection():
 					return row.Loc 
 				
 			def check_tahun(row):
-				if (isinstance(row.List_tahun, str)) & (isinstance(row.tahun, float)):
+				if (isinstance(row.List_tahun, str)) & (isinstance(row.tahun, int)):
+					if (int(row.List_tahun) > (row.tahun)):
+						return row.List_tahun
+					else:
+						return row.tahun
+				elif (isinstance(row.List_tahun, str)) & (isinstance(row.tahun, float)):
 					return row.List_tahun
 				elif (isinstance(row.tahun, str)) & (isinstance(row.List_tahun, float)):
 					return row.tahun
@@ -872,14 +922,16 @@ def show_selection():
 	
 			# dataframe for table
 			result_join_count = result_join_decode.loc[:, result_join_decode.columns.to_series().str.contains('Result').tolist()]
-
-			# convert column ResultTahun to int
-			result_join_count['ResultTahun'] = pd.to_numeric(result_join_count['ResultTahun'], errors='coerce')
+			result_join_count = result_join_count.loc[:, result_join_decode.notnull().any()]
 
 			if 'ResultTahun' in result_join_count.columns:
+				result_join_count['ResultTahun'] = pd.to_numeric(result_join_count['ResultTahun'], errors='coerce')
+				result_join_count['ResultTahun'].fillna(0)
 				group_tahun = result_join_count['ResultTahun'].groupby(result_join_count['ResultTahun']).count()
 				dict_tahun = defaultdict(list)
 				for k, v in chain(listgroupby['tahun'].items(), group_tahun.items()):
+					if group_tahun.empty:
+						v = 0
 					dict_tahun[k].append(v)
 				tahun_to_df = pd.DataFrame.from_dict(dict_tahun, orient='index').reset_index().fillna(0)
 				tahun_to_df.columns = ['nama', 'semua', 'rules']
@@ -891,7 +943,7 @@ def show_selection():
 				tahun_rules = Bar(x=tahun_to_df.nama,
 					y=tahun_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [tahun_semua, tahun_rules]
 				layout = Layout(title="Data Tahun",
 								yaxis=dict(title='Jumlah Data'),
@@ -907,6 +959,8 @@ def show_selection():
 				group_bulan = result_join_count['ResultBulan'].groupby(result_join_count['ResultBulan']).count()
 				dict_bulan = defaultdict(list)
 				for k, v in chain(listgroupby['bulan'].items(), group_bulan.items()):
+					if group_bulan.empty:
+						v = 0
 					dict_bulan[k].append(v)
 				bulan_to_df = pd.DataFrame.from_dict(dict_bulan, orient='index').reset_index().fillna(0) 
 				bulan_to_df.columns = ['nama', 'semua', 'rules']
@@ -919,7 +973,7 @@ def show_selection():
 				bulan_rules = Bar(x=bulan_to_df.nama,
 					y=bulan_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 
 				data = [bulan_semua, bulan_rules]
 				layout = Layout(title="Data Bulan",
@@ -937,7 +991,11 @@ def show_selection():
 				group_kab = result_join_count['ResultKab'].groupby(result_join_count['ResultKab']).count()
 				dict_kab = defaultdict(list)
 				for k, v in chain(listgroupby['kabupaten'].items(), group_kab.items()):
-					dict_kab[k].append(v)
+					if (not listgroupby['kabupaten'].empty):
+						dict_kab[k].append(v)
+					if group_kab.empty:
+						v = 0
+						dict_kab[k].append(v)
 				kab_to_df = pd.DataFrame.from_dict(dict_kab, orient='index').reset_index().fillna(0)
 				kab_to_df.columns = ['nama', 'semua', 'rules']
 				# chart bulan
@@ -948,7 +1006,7 @@ def show_selection():
 				kab_rules = Bar(x=kab_to_df.nama,
 					y=kab_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [kab_semua, kab_rules]
 				layout = Layout(title="Data Kabupaten",
 								yaxis=dict(title='Jumlah Data'),
@@ -965,7 +1023,11 @@ def show_selection():
 				group_act1 = result_join_count['ResultActor1'].groupby(result_join_count['ResultActor1']).count()
 				dict_act1 = defaultdict(list)
 				for k, v in chain(listgroupby['actor_s1_tp'].items(), group_act1.items()):
-					dict_act1[k].append(v)
+					if (not listgroupby['actor_s1_tp'].empty):
+						dict_act1[k].append(v)
+					if group_act1.empty:
+						v = 0
+						dict_act1[k].append(v)
 				act1_to_df = pd.DataFrame.from_dict(dict_act1, orient='index').reset_index().fillna(0)
 				act1_to_df.columns = ['nama', 'semua', 'rules']
 				# chart actor 1
@@ -976,7 +1038,7 @@ def show_selection():
 				act1_rules = Bar(x=act1_to_df.nama,
 					y=act1_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [act1_semua, act1_rules]
 				layout = Layout(title="Data Aktor 1",
 								yaxis=dict(title='Jumlah Data'),
@@ -993,7 +1055,11 @@ def show_selection():
 				group_act2 = result_join_count['ResultActor2'].groupby(result_join_count['ResultActor2']).count()
 				dict_act2 = defaultdict(list)
 				for k, v in chain(listgroupby['actor_s2_tp'].items(), group_act2.items()):
-					dict_act2[k].append(v)
+					if (not listgroupby['actor_s2_tp'].empty):
+						dict_act2[k].append(v)
+					if group_act2.empty:
+						v = 0
+						dict_act2[k].append(v)
 				act2_to_df = pd.DataFrame.from_dict(dict_act2, orient='index').reset_index().fillna(0)
 				act2_to_df.columns = ['nama', 'semua', 'rules']
 				# chart actor 2
@@ -1004,7 +1070,7 @@ def show_selection():
 				act2_rules = Bar(x=act2_to_df.nama,
 					y=act2_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [act2_semua, act2_rules]
 				layout = Layout(title="Data Aktor 2",
 								yaxis=dict(title='Jumlah Data'),
@@ -1021,7 +1087,11 @@ def show_selection():
 				group_weap1 = result_join_count['ResultWeap1'].groupby(result_join_count['ResultWeap1']).count()
 				dict_weap1 = defaultdict(list)
 				for k, v in chain(listgroupby['weapon_1'].items(), group_weap1.items()):
-					dict_weap1[k].append(v)
+					if (not listgroupby['weapon_1'].empty):
+						dict_weap1[k].append(v)
+					if group_weap1.empty:
+						v = 0
+						dict_weap1[k].append(v)
 				weap1_to_df = pd.DataFrame.from_dict(dict_weap1, orient='index').reset_index().fillna(0)
 				weap1_to_df.columns = ['nama', 'semua', 'rules']
 				# chart weapon1
@@ -1032,7 +1102,7 @@ def show_selection():
 				weap1_rules = Bar(x=weap1_to_df.nama,
 					y=weap1_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [weap1_semua, weap1_rules]
 				layout = Layout(title="Data Senjata 1",
 								yaxis=dict(title='Jumlah Data'),
@@ -1049,7 +1119,11 @@ def show_selection():
 				group_weap2 = result_join_count['ResultWeap2'].groupby(result_join_count['ResultWeap2']).count()
 				dict_weap2 = defaultdict(list)
 				for k, v in chain(listgroupby['weapon_2'].items(), group_weap2.items()):
-					dict_weap2[k].append(v)
+					if (not listgroupby['weapon_2'].empty):
+						dict_weap2[k].append(v)
+					if group_weap2.empty:
+						v = 0
+						dict_weap2[k].append(v)
 				weap2_to_df = pd.DataFrame.from_dict(dict_weap1, orient='index').reset_index().fillna(0)
 				weap2_to_df.columns = ['nama', 'semua', 'rules']
 				# chart weapon1
@@ -1060,7 +1134,7 @@ def show_selection():
 				weap2_rules = Bar(x=weap2_to_df.nama,
 					y=weap2_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [weap2_semua, weap2_rules]
 				layout = Layout(title="Data Senjata 2",
 								yaxis=dict(title='Jumlah Data'),
@@ -1077,6 +1151,8 @@ def show_selection():
 				group_jenisKek = result_join_count['ResultJenisKek'].groupby(result_join_count['ResultJenisKek']).count()
 				dict_jenisKek = defaultdict(list)
 				for k, v in chain(listgroupby['jenis_kek'].items(), group_jenisKek.items()):
+					if group_jenisKek.empty:
+						v = 0
 					dict_jenisKek[k].append(v)
 				jenisKek_to_df = pd.DataFrame.from_dict(dict_jenisKek, orient='index').reset_index().fillna(0)
 				jenisKek_to_df.columns = ['nama', 'semua', 'rules']
@@ -1088,7 +1164,7 @@ def show_selection():
 				jenisKek_rules = Bar(x=jenisKek_to_df.nama,
 					y=jenisKek_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [jenisKek_semua, jenisKek_rules]
 				layout = Layout(title="Data Jenis kekerasan",
 								yaxis=dict(title='Jumlah Data'),
@@ -1105,7 +1181,11 @@ def show_selection():
 				group_katKek = result_join_count['ResultKatKek'].groupby(result_join_count['ResultKatKek']).count()
 				dict_katKek = defaultdict(list)
 				for k, v in chain(listgroupby['tp_kek1_new'].items(), group_katKek.items()):
-					dict_katKek[k].append(v)
+					if (not listgroupby['tp_kek1_new'].empty):
+						dict_katKek[k].append(v)
+					if group_katKek.empty:
+						v = 0
+						dict_katKek[k].append(v)
 				katKek_to_df = pd.DataFrame.from_dict(dict_katKek, orient='index').reset_index().fillna(0)
 				katKek_to_df.columns = ['nama', 'semua', 'rules']
 				# chart kategori kekerasan
@@ -1116,7 +1196,7 @@ def show_selection():
 				katKek_rules = Bar(x=katKek_to_df.nama,
 					y=katKek_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [katKek_semua, katKek_rules]
 				layout = Layout(title="Data Kategori Kekerasan",
 								yaxis=dict(title='Jumlah Data'),
@@ -1133,7 +1213,11 @@ def show_selection():
 				group_benKek = result_join_count['ResultBenKek'].groupby(result_join_count['ResultBenKek']).count()
 				dict_benKek = defaultdict(list)
 				for k, v in chain(listgroupby['ben_kek1'].items(), group_benKek.items()):
-					dict_benKek[k].append(v)
+					if (not listgroupby['ben_kek1'].empty):
+						dict_benKek[k].append(v)
+					if group_benKek.empty:
+						v = 0
+						dict_benKek[k].append(v)
 				benKek_to_df = pd.DataFrame.from_dict(dict_benKek, orient='index').reset_index().fillna(0)
 				benKek_to_df.columns = ['nama', 'semua', 'rules']
 				# chart bentuk Kekerasan
@@ -1144,7 +1228,7 @@ def show_selection():
 				benKek_rules = Bar(x=benKek_to_df.nama,
 					y=benKek_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [benKek_semua, benKek_rules]
 				layout = Layout(title="Data Bentuk Kekerasan",
 								yaxis=dict(title='Jumlah Data'),
@@ -1161,7 +1245,11 @@ def show_selection():
 				group_metaKek = result_join_count['ResultMetaKek'].groupby(result_join_count['ResultMetaKek']).count()
 				dict_metaKek = defaultdict(list)
 				for k, v in chain(listgroupby['meta_tp_kek1_new'].items(), group_metaKek.items()):
-					dict_metaKek[k].append(v)
+					if (not listgroupby['meta_tp_kek1_new'].empty):
+						dict_metaKek[k].append(v)
+					if group_metaKek.empty:
+						v = 0
+						dict_metaKek[k].append(v)
 				metaKek_to_df = pd.DataFrame.from_dict(dict_metaKek, orient='index').reset_index().fillna(0)
 				metaKek_to_df.columns = ['nama', 'semua', 'rules']
 				# chart meta kekerasan
@@ -1172,7 +1260,7 @@ def show_selection():
 				metaKek_rules = Bar(x=metaKek_to_df.nama,
 					y=metaKek_to_df.rules,
 					name='Rules Yang Didapat',
-					marker=dict(color='#68A7F6'))
+					marker=dict(color='rgb(255, 145, 15)'))
 				data = [metaKek_semua, metaKek_rules]
 				layout = Layout(title="Data Meta Kekerasan",
 								yaxis=dict(title='Jumlah Data'),
@@ -1212,6 +1300,17 @@ def show_selection():
 										   table_attributes="id=\"info-table\" class=\"table\"")
 
 		else:
+			tahunJSON = {}
+			blnJSON = {}
+			kabJSON = {}
+			act1JSON = {}
+			act2JSON = {}
+			weap1JSON = {}
+			weap2JSON = {}
+			jenisKekJSON = {}
+			katKekJSON = {}
+			benKekJSON = {}
+			metaKekJSON = {}
 			converted_data = []
 			total_rules = 0
 			print_html = "Tidak ada rules"
@@ -1471,6 +1570,7 @@ def show_selection():
 
 		# mencari rules dari pattern yang telah dibuat
 		rules = pyfpgrowth.generate_association_rules(patterns, min_conf)
+		timer = (time.time() - start_time)
 
 		if rules:
 			total_rules = len(rules)
@@ -1533,14 +1633,34 @@ def show_selection():
 
 			print_html = json2html.convert(json=national_data,
 										   table_attributes="id=\"info-table\" class=\"table\"")
+			tahunJSON = {}
+			blnJSON = {}
+			kabJSON = {}
+			act1JSON = {}
+			act2JSON = {}
+			weap1JSON = {}
+			weap2JSON = {}
+			jenisKekJSON = {}
+			katKekJSON = {}
+			benKekJSON = {}
+			metaKekJSON = {}
 		else:
+			tahunJSON = {}
+			blnJSON = {}
+			kabJSON = {}
+			act1JSON = {}
+			act2JSON = {}
+			weap1JSON = {}
+			weap2JSON = {}
+			jenisKekJSON = {}
+			katKekJSON = {}
+			benKekJSON = {}
+			metaKekJSON = {}
 			converted_data = []
 			total_rules = 0
 			print_html = "Tidak ada rules"
 			out_filter_result = "Tidak ada rules"
 
-
-	timer = (time.time() - start_time)
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
 	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, metaKek_data=metaKekJSON)

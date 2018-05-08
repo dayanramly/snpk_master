@@ -552,7 +552,7 @@ input:focus, textarea:focus {
   background: #6098e0;
 }
 .table-nasional .table tbody tr td:first-child {
-  display: none;
+  /*display: none;*/
 }
 .table-nasional .table tbody tr th:first-child{
   display: none !important;
