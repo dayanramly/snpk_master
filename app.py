@@ -398,7 +398,7 @@ def show_selection():
 		listgroupby = {}
 		for index, x in enumerate(con_dimensi):
 			con_split = x.split(',')
-			print con_split
+			# print con_split
 			for dim in con_split:
 				dim = dim.replace('"', '')
 				listgroupby[dim] = eval('snpkframe3["'+dim+'"].groupby(snpkframe3["'+dim+'"]).count()')
@@ -928,20 +928,24 @@ def show_selection():
 				result_join_count['ResultTahun'] = pd.to_numeric(result_join_count['ResultTahun'], errors='coerce')
 				result_join_count['ResultTahun'].fillna(0)
 				group_tahun = result_join_count['ResultTahun'].groupby(result_join_count['ResultTahun']).count()
+				group_result = result_join_count['Result'].groupby(result_join_count['ResultTahun'])
+				dict_rules = defaultdict(list)
+				for key, item in group_result:
+					dict_rules[key].append(item)
 				dict_tahun = defaultdict(list)
-				for k, v in chain(listgroupby['tahun'].items(), group_tahun.items()):
+				for k, v in chain(listgroupby['tahun'].items(), group_tahun.items(), dict_rules.items()):
 					if group_tahun.empty:
 						v = 0
 					dict_tahun[k].append(v)
 				tahun_to_df = pd.DataFrame.from_dict(dict_tahun, orient='index').reset_index().fillna(0)
-				tahun_to_df.columns = ['nama', 'semua', 'rules']
+				tahun_to_df.columns = ['Tahun', 'semua', 'jml_rules', 'Rules']
 				# chart tahun
-				tahun_semua = Bar(x=tahun_to_df.nama,
+				tahun_semua = Bar(x=tahun_to_df.Tahun,
 					y=tahun_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				tahun_rules = Bar(x=tahun_to_df.nama,
-					y=tahun_to_df.rules,
+				tahun_rules = Bar(x=tahun_to_df.Tahun,
+					y=tahun_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [tahun_semua, tahun_rules]
@@ -952,26 +956,35 @@ def show_selection():
 								width=860)
 				fig = Figure(data=data, layout=layout)
 				tahunJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
+				tahun_export_rules = tahun_to_df.loc[tahun_to_df['jml_rules'] > 0]
+				tahun_export_rules = tahun_export_rules[['Tahun', 'Rules']]
+				# data_rules_tahun = tahun_export_rules.to_json(orient='records')
+				data_rules_tahun = json2html.convert(json=tahun_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				tahunJSON = {}
+				data_rules_tahun = []
 					
 			if 'ResultBulan' in result_join_count.columns:
 				group_bulan = result_join_count['ResultBulan'].groupby(result_join_count['ResultBulan']).count()
+				group_bulan_result = result_join_count['Result'].groupby(result_join_count['ResultBulan'])
+				dict_bulan_rules = defaultdict(list)
+				for key, item in group_bulan_result:
+					dict_bulan_rules[key].append(item)
 				dict_bulan = defaultdict(list)
-				for k, v in chain(listgroupby['bulan'].items(), group_bulan.items()):
+				for k, v in chain(listgroupby['bulan'].items(), group_bulan.items(), dict_bulan_rules.items()):
 					if group_bulan.empty:
 						v = 0
 					dict_bulan[k].append(v)
 				bulan_to_df = pd.DataFrame.from_dict(dict_bulan, orient='index').reset_index().fillna(0) 
-				bulan_to_df.columns = ['nama', 'semua', 'rules']
+				bulan_to_df.columns = ['Bulan', 'semua', 'jml_rules', 'Rules']
 				# chart bulan
-				bulan_semua = Bar(x=bulan_to_df.nama,
+				bulan_semua = Bar(x=bulan_to_df.Bulan,
 					y=bulan_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
 
-				bulan_rules = Bar(x=bulan_to_df.nama,
-					y=bulan_to_df.rules,
+				bulan_rules = Bar(x=bulan_to_df.Bulan,
+					y=bulan_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 
@@ -983,28 +996,37 @@ def show_selection():
 								width=860)
 				bln = Figure(data=data, layout=layout)
 				
-				blnJSON = json.dumps(bln, cls=plotly.utils.PlotlyJSONEncoder)			
+				blnJSON = json.dumps(bln, cls=plotly.utils.PlotlyJSONEncoder)
+				bulan_export_rules = bulan_to_df.loc[bulan_to_df['jml_rules'] > 0]
+				bulan_export_rules = bulan_export_rules[['Bulan', 'Rules']]
+				data_rules_bulan = json2html.convert(json=bulan_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
+			
 			else:
 				blnJSON = {}
+				data_rules_bulan = []
 
 			if 'ResultKab' in result_join_count.columns:
 				group_kab = result_join_count['ResultKab'].groupby(result_join_count['ResultKab']).count()
+				group_kab_result = result_join_count['Result'].groupby(result_join_count['ResultKab'])
+				dict_kab_rules = defaultdict(list)
+				for key, item in group_kab_result:
+					dict_kab_rules[key].append(item)
 				dict_kab = defaultdict(list)
-				for k, v in chain(listgroupby['kabupaten'].items(), group_kab.items()):
+				for k, v in chain(listgroupby['kabupaten'].items(), group_kab.items(), dict_kab_rules.items()):
 					if (not listgroupby['kabupaten'].empty):
 						dict_kab[k].append(v)
 					if group_kab.empty:
 						v = 0
 						dict_kab[k].append(v)
 				kab_to_df = pd.DataFrame.from_dict(dict_kab, orient='index').reset_index().fillna(0)
-				kab_to_df.columns = ['nama', 'semua', 'rules']
+				kab_to_df.columns = ['Kabupaten', 'semua', 'jml_rules', 'Rules']
 				# chart bulan
-				kab_semua = Bar(x=kab_to_df.nama,
+				kab_semua = Bar(x=kab_to_df.Kabupaten,
 					y=kab_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				kab_rules = Bar(x=kab_to_df.nama,
-					y=kab_to_df.rules,
+				kab_rules = Bar(x=kab_to_df.Kabupaten,
+					y=kab_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [kab_semua, kab_rules]
@@ -1016,27 +1038,35 @@ def show_selection():
 				kab = Figure(data=data, layout=layout)
 				
 				kabJSON = json.dumps(kab, cls=plotly.utils.PlotlyJSONEncoder)
+				kab_export_rules = kab_to_df.loc[kab_to_df['jml_rules'] > 0]
+				kab_export_rules = kab_export_rules[['Kabupaten', 'Rules']]
+				data_rules_kab = json2html.convert(json=kab_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				kabJSON = {}
+				data_rules_kab = []
 
 			if 'ResultActor1' in result_join_count.columns:
 				group_act1 = result_join_count['ResultActor1'].groupby(result_join_count['ResultActor1']).count()
+				group_act1_result = result_join_count['Result'].groupby(result_join_count['ResultActor1'])
+				dict_act1_rules = defaultdict(list)
+				for key, item in group_act1_result:
+					dict_act1_rules[key].append(item)
 				dict_act1 = defaultdict(list)
-				for k, v in chain(listgroupby['actor_s1_tp'].items(), group_act1.items()):
+				for k, v in chain(listgroupby['actor_s1_tp'].items(), group_act1.items(), dict_act1_rules.items()):
 					if (not listgroupby['actor_s1_tp'].empty):
 						dict_act1[k].append(v)
 					if group_act1.empty:
 						v = 0
 						dict_act1[k].append(v)
 				act1_to_df = pd.DataFrame.from_dict(dict_act1, orient='index').reset_index().fillna(0)
-				act1_to_df.columns = ['nama', 'semua', 'rules']
+				act1_to_df.columns = ['Actor1', 'semua', 'jml_rules', 'Rules']
 				# chart actor 1
-				act1_semua = Bar(x=act1_to_df.nama,
+				act1_semua = Bar(x=act1_to_df.Actor1,
 					y=act1_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				act1_rules = Bar(x=act1_to_df.nama,
-					y=act1_to_df.rules,
+				act1_rules = Bar(x=act1_to_df.Actor1,
+					y=act1_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [act1_semua, act1_rules]
@@ -1048,27 +1078,35 @@ def show_selection():
 				act1 = Figure(data=data, layout=layout)
 				
 				act1JSON = json.dumps(act1, cls=plotly.utils.PlotlyJSONEncoder)
+				act1_export_rules = act1_to_df.loc[act1_to_df['jml_rules'] > 0]
+				act1_export_rules = act1_export_rules[['Actor1', 'Rules']]
+				data_rules_act1 = json2html.convert(json=act1_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				act1JSON = {}
+				data_rules_act1 = []
 
 			if 'ResultActor2' in result_join_count.columns:
 				group_act2 = result_join_count['ResultActor2'].groupby(result_join_count['ResultActor2']).count()
+				group_act2_result = result_join_count['Result'].groupby(result_join_count['ResultActor2'])
+				dict_act2_rules = defaultdict(list)
+				for key, item in group_act2_result:
+					dict_act2_rules[key].append(item)
 				dict_act2 = defaultdict(list)
-				for k, v in chain(listgroupby['actor_s2_tp'].items(), group_act2.items()):
+				for k, v in chain(listgroupby['actor_s2_tp'].items(), group_act2.items(), dict_act2_rules.items()):
 					if (not listgroupby['actor_s2_tp'].empty):
 						dict_act2[k].append(v)
 					if group_act2.empty:
 						v = 0
 						dict_act2[k].append(v)
 				act2_to_df = pd.DataFrame.from_dict(dict_act2, orient='index').reset_index().fillna(0)
-				act2_to_df.columns = ['nama', 'semua', 'rules']
+				act2_to_df.columns = ['Actor2', 'semua', 'jml_rules', 'Rules']
 				# chart actor 2
-				act2_semua = Bar(x=act2_to_df.nama,
+				act2_semua = Bar(x=act2_to_df.Actor2,
 					y=act2_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				act2_rules = Bar(x=act2_to_df.nama,
-					y=act2_to_df.rules,
+				act2_rules = Bar(x=act2_to_df.Actor2,
+					y=act2_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [act2_semua, act2_rules]
@@ -1080,27 +1118,35 @@ def show_selection():
 				act2 = Figure(data=data, layout=layout)
 				
 				act2JSON = json.dumps(act2, cls=plotly.utils.PlotlyJSONEncoder)
+				act2_export_rules = act2_to_df.loc[act2_to_df['jml_rules'] > 0]
+				act2_export_rules = act2_export_rules[['Actor2', 'Rules']]
+				data_rules_act2 = json2html.convert(json=act2_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				act2JSON = {}
+				data_rules_act2 = []
 				
 			if 'ResultWeap1' in result_join_count.columns:
 				group_weap1 = result_join_count['ResultWeap1'].groupby(result_join_count['ResultWeap1']).count()
+				group_weap1_result = result_join_count['Result'].groupby(result_join_count['ResultWeap1'])
+				dict_weap1_rules = defaultdict(list)
+				for key, item in group_weap1_result:
+					dict_weap1_rules[key].append(item)
 				dict_weap1 = defaultdict(list)
-				for k, v in chain(listgroupby['weapon_1'].items(), group_weap1.items()):
+				for k, v in chain(listgroupby['weapon_1'].items(), group_weap1.items(), dict_weap1_rules.items()):
 					if (not listgroupby['weapon_1'].empty):
 						dict_weap1[k].append(v)
 					if group_weap1.empty:
 						v = 0
 						dict_weap1[k].append(v)
 				weap1_to_df = pd.DataFrame.from_dict(dict_weap1, orient='index').reset_index().fillna(0)
-				weap1_to_df.columns = ['nama', 'semua', 'rules']
+				weap1_to_df.columns = ['Senjata1', 'semua', 'jml_rules', 'Rules']
 				# chart weapon1
-				weap1_semua = Bar(x=weap1_to_df.nama,
+				weap1_semua = Bar(x=weap1_to_df.Senjata1,
 					y=weap1_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				weap1_rules = Bar(x=weap1_to_df.nama,
-					y=weap1_to_df.rules,
+				weap1_rules = Bar(x=weap1_to_df.Senjata1,
+					y=weap1_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [weap1_semua, weap1_rules]
@@ -1112,27 +1158,35 @@ def show_selection():
 				weap1 = Figure(data=data, layout=layout)
 				
 				weap1JSON = json.dumps(weap1, cls=plotly.utils.PlotlyJSONEncoder)
+				weap1_export_rules = weap1_to_df.loc[weap1_to_df['jml_rules'] > 0]
+				weap1_export_rules = weap1_export_rules[['Senjata1', 'Rules']]
+				data_rules_weap1 = json2html.convert(json=weap1_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				weap1JSON = {}
+				data_rules_weap1 = []
 				
 			if 'ResultWeap2' in result_join_count.columns:
 				group_weap2 = result_join_count['ResultWeap2'].groupby(result_join_count['ResultWeap2']).count()
+				group_weap2_result = result_join_count['Result'].groupby(result_join_count['ResultWeap2'])
+				dict_weap2_rules = defaultdict(list)
+				for key, item in group_weap2_result:
+					dict_weap2_rules[key].append(item)
 				dict_weap2 = defaultdict(list)
-				for k, v in chain(listgroupby['weapon_2'].items(), group_weap2.items()):
+				for k, v in chain(listgroupby['weapon_2'].items(), group_weap2.items(), dict_weap2_rules.items()):
 					if (not listgroupby['weapon_2'].empty):
 						dict_weap2[k].append(v)
 					if group_weap2.empty:
 						v = 0
 						dict_weap2[k].append(v)
 				weap2_to_df = pd.DataFrame.from_dict(dict_weap1, orient='index').reset_index().fillna(0)
-				weap2_to_df.columns = ['nama', 'semua', 'rules']
-				# chart weapon1
-				weap2_semua = Bar(x=weap2_to_df.nama,
+				weap2_to_df.columns = ['Senjata2', 'semua', 'jml_rules', 'Rules']
+				# chart weapon2
+				weap2_semua = Bar(x=weap2_to_df.Senjata2,
 					y=weap2_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				weap2_rules = Bar(x=weap2_to_df.nama,
-					y=weap2_to_df.rules,
+				weap2_rules = Bar(x=weap2_to_df.Senjata2,
+					y=weap2_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [weap2_semua, weap2_rules]
@@ -1144,25 +1198,33 @@ def show_selection():
 				weap2 = Figure(data=data, layout=layout)
 				
 				weap2JSON = json.dumps(weap2, cls=plotly.utils.PlotlyJSONEncoder)
+				weap2_export_rules = weap2_to_df.loc[weap2_to_df['jml_rules'] > 0]
+				weap2_export_rules = weap2_export_rules[['Senjata2', 'Rules']]
+				data_rules_weap2 = json2html.convert(json=weap2_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				weap2JSON = {}
+				data_rules_weap2 = []
 				
 			if 'ResultJenisKek' in result_join_count.columns:
 				group_jenisKek = result_join_count['ResultJenisKek'].groupby(result_join_count['ResultJenisKek']).count()
+				group_jenisKek_result = result_join_count['Result'].groupby(result_join_count['ResultJenisKek'])
+				dict_jenisKek_rules = defaultdict(list)
+				for key, item in group_jenisKek_result:
+					dict_jenisKek_rules[key].append(item)
 				dict_jenisKek = defaultdict(list)
-				for k, v in chain(listgroupby['jenis_kek'].items(), group_jenisKek.items()):
+				for k, v in chain(listgroupby['jenis_kek'].items(), group_jenisKek.items(), dict_jenisKek_rules.items()):
 					if group_jenisKek.empty:
 						v = 0
 					dict_jenisKek[k].append(v)
 				jenisKek_to_df = pd.DataFrame.from_dict(dict_jenisKek, orient='index').reset_index().fillna(0)
-				jenisKek_to_df.columns = ['nama', 'semua', 'rules']
+				jenisKek_to_df.columns = ['JenisKekerasan', 'semua', 'jml_rules', 'Rules']
 				# chart jenis kekerasan
-				jenisKek_semua = Bar(x=jenisKek_to_df.nama,
+				jenisKek_semua = Bar(x=jenisKek_to_df.JenisKekerasan,
 					y=jenisKek_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				jenisKek_rules = Bar(x=jenisKek_to_df.nama,
-					y=jenisKek_to_df.rules,
+				jenisKek_rules = Bar(x=jenisKek_to_df.JenisKekerasan,
+					y=jenisKek_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [jenisKek_semua, jenisKek_rules]
@@ -1174,27 +1236,35 @@ def show_selection():
 				jenisKek = Figure(data=data, layout=layout)
 				
 				jenisKekJSON = json.dumps(jenisKek, cls=plotly.utils.PlotlyJSONEncoder)
+				jenisKek_export_rules = jenisKek_to_df.loc[jenisKek_to_df['jml_rules'] > 0]
+				jenisKek_export_rules = jenisKek_export_rules[['JenisKekerasan', 'Rules']]
+				data_rules_jenisKek = json2html.convert(json=jenisKek_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				jenisKekJSON = {}
+				data_rules_jenisKek = []
 				
 			if 'ResultKatKek' in result_join_count.columns:
 				group_katKek = result_join_count['ResultKatKek'].groupby(result_join_count['ResultKatKek']).count()
+				group_katKek_result = result_join_count['Result'].groupby(result_join_count['ResultKatKek'])
+				dict_katKek_rules = defaultdict(list)
+				for key, item in group_katKek_result:
+					dict_katKek_rules[key].append(item)
 				dict_katKek = defaultdict(list)
-				for k, v in chain(listgroupby['tp_kek1_new'].items(), group_katKek.items()):
+				for k, v in chain(listgroupby['tp_kek1_new'].items(), group_katKek.items(), dict_katKek_rules.items()):
 					if (not listgroupby['tp_kek1_new'].empty):
 						dict_katKek[k].append(v)
 					if group_katKek.empty:
 						v = 0
 						dict_katKek[k].append(v)
 				katKek_to_df = pd.DataFrame.from_dict(dict_katKek, orient='index').reset_index().fillna(0)
-				katKek_to_df.columns = ['nama', 'semua', 'rules']
+				katKek_to_df.columns = ['KategoriKekerasan', 'semua', 'jml_rules', 'Rules']
 				# chart kategori kekerasan
-				katKek_semua = Bar(x=katKek_to_df.nama,
+				katKek_semua = Bar(x=katKek_to_df.KategoriKekerasan,
 					y=katKek_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				katKek_rules = Bar(x=katKek_to_df.nama,
-					y=katKek_to_df.rules,
+				katKek_rules = Bar(x=katKek_to_df.KategoriKekerasan,
+					y=katKek_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [katKek_semua, katKek_rules]
@@ -1206,27 +1276,36 @@ def show_selection():
 				katKek = Figure(data=data, layout=layout)
 				
 				katKekJSON = json.dumps(katKek, cls=plotly.utils.PlotlyJSONEncoder)
+				katKek_export_rules = katKek_to_df.loc[katKek_to_df['jml_rules'] > 0]
+				katKek_export_rules = katKek_export_rules[['KategoriKekerasan', 'Rules']]
+				data_rules_katKek = json2html.convert(json=katKek_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
+
 			else:
 				katKekJSON = {}
+				data_rules_katKek = []
 				
 			if 'ResultBenKek' in result_join_count.columns:
 				group_benKek = result_join_count['ResultBenKek'].groupby(result_join_count['ResultBenKek']).count()
+				group_benKek_result = result_join_count['Result'].groupby(result_join_count['ResultBenKek'])
+				dict_benKek_rules = defaultdict(list)
+				for key, item in group_benKek_result:
+					dict_benKek_rules[key].append(item)
 				dict_benKek = defaultdict(list)
-				for k, v in chain(listgroupby['ben_kek1'].items(), group_benKek.items()):
+				for k, v in chain(listgroupby['ben_kek1'].items(), group_benKek.items(), dict_benKek_rules.items()):
 					if (not listgroupby['ben_kek1'].empty):
 						dict_benKek[k].append(v)
 					if group_benKek.empty:
 						v = 0
 						dict_benKek[k].append(v)
 				benKek_to_df = pd.DataFrame.from_dict(dict_benKek, orient='index').reset_index().fillna(0)
-				benKek_to_df.columns = ['nama', 'semua', 'rules']
+				benKek_to_df.columns = ['BentukKekerasan', 'semua', 'jml_rules', 'Rules']
 				# chart bentuk Kekerasan
-				benKek_semua = Bar(x=benKek_to_df.nama,
+				benKek_semua = Bar(x=benKek_to_df.BentukKekerasan,
 					y=benKek_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				benKek_rules = Bar(x=benKek_to_df.nama,
-					y=benKek_to_df.rules,
+				benKek_rules = Bar(x=benKek_to_df.BentukKekerasan,
+					y=benKek_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [benKek_semua, benKek_rules]
@@ -1238,27 +1317,36 @@ def show_selection():
 				benKek = Figure(data=data, layout=layout)
 				
 				benKekJSON = json.dumps(benKek, cls=plotly.utils.PlotlyJSONEncoder)
+				benKek_export_rules = benKek_to_df.loc[benKek_to_df['jml_rules'] > 0]
+				benKek_export_rules = benKek_export_rules[['BentukKekerasan', 'Rules']]
+				data_rules_benKek = json2html.convert(json=benKek_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				benKekJSON = {}
+				data_rules_benKek = []
 				
 			if 'ResultMetaKek' in result_join_count.columns:
 				group_metaKek = result_join_count['ResultMetaKek'].groupby(result_join_count['ResultMetaKek']).count()
+				group_metaKek_result = result_join_count['Result'].groupby(result_join_count['ResultMetaKek'])
+				dict_metaKek_rules = defaultdict(list)
+				for key, item in group_metaKek_result:
+					dict_metaKek_rules[key].append(item)
+				dict_benKek = defaultdict(list)
 				dict_metaKek = defaultdict(list)
-				for k, v in chain(listgroupby['meta_tp_kek1_new'].items(), group_metaKek.items()):
+				for k, v in chain(listgroupby['meta_tp_kek1_new'].items(), group_metaKek.items(), dict_metaKek_rules.items()):
 					if (not listgroupby['meta_tp_kek1_new'].empty):
 						dict_metaKek[k].append(v)
 					if group_metaKek.empty:
 						v = 0
 						dict_metaKek[k].append(v)
 				metaKek_to_df = pd.DataFrame.from_dict(dict_metaKek, orient='index').reset_index().fillna(0)
-				metaKek_to_df.columns = ['nama', 'semua', 'rules']
+				metaKek_to_df.columns = ['MetaKekerasan', 'semua', 'jml_rules', 'Rules']
 				# chart meta kekerasan
-				metaKek_semua = Bar(x=metaKek_to_df.nama,
+				metaKek_semua = Bar(x=metaKek_to_df.MetaKekerasan,
 					y=metaKek_to_df.semua,
 					name='Semua Data',
 					marker=dict(color='rgb(55, 83, 109)'))
-				metaKek_rules = Bar(x=metaKek_to_df.nama,
-					y=metaKek_to_df.rules,
+				metaKek_rules = Bar(x=metaKek_to_df.MetaKekerasan,
+					y=metaKek_to_df.jml_rules,
 					name='Rules Yang Didapat',
 					marker=dict(color='rgb(255, 145, 15)'))
 				data = [metaKek_semua, metaKek_rules]
@@ -1270,8 +1358,13 @@ def show_selection():
 				metaKek = Figure(data=data, layout=layout)
 				
 				metaKekJSON = json.dumps(metaKek, cls=plotly.utils.PlotlyJSONEncoder)
+				metaKek_export_rules = metaKek_to_df.loc[metaKek_to_df['jml_rules'] > 0]
+				metaKek_export_rules = metaKek_export_rules[['MetaKekerasan', 'list_rules']]
+				data_rules_metaKek = json2html.convert(json=metaKek_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
 			else:
 				metaKekJSON = {}
+				data_rules_metaKek = []
+
 
 			# dataframe for map
 			result_join_decode['ResultLoc'] = result_join_decode.apply(check_loc, axis=1)
@@ -1311,6 +1404,17 @@ def show_selection():
 			katKekJSON = {}
 			benKekJSON = {}
 			metaKekJSON = {}
+			data_rules_tahun = []
+			data_rules_bulan = []
+			data_rules_kab = []
+			data_rules_act1 = []
+			data_rules_act2 = []
+			data_rules_weap1 = []
+			data_rules_weap2 = []
+			data_rules_jenisKek = []
+			data_rules_katKek = []
+			data_rules_benKek = []
+			data_rules_metaKek = []
 			converted_data = []
 			total_rules = 0
 			print_html = "Tidak ada rules"
@@ -1644,6 +1748,17 @@ def show_selection():
 			katKekJSON = {}
 			benKekJSON = {}
 			metaKekJSON = {}
+			data_rules_tahun = []
+			data_rules_bulan = []
+			data_rules_kab = []
+			data_rules_act1 = []
+			data_rules_act2 = []
+			data_rules_weap1 = []
+			data_rules_weap2 = []
+			data_rules_jenisKek = []
+			data_rules_katKek = []
+			data_rules_benKek = []
+			data_rules_metaKek = []
 		else:
 			tahunJSON = {}
 			blnJSON = {}
@@ -1656,6 +1771,17 @@ def show_selection():
 			katKekJSON = {}
 			benKekJSON = {}
 			metaKekJSON = {}
+			data_rules_tahun = []
+			data_rules_bulan = []
+			data_rules_kab = []
+			data_rules_act1 = []
+			data_rules_act2 = []
+			data_rules_weap1 = []
+			data_rules_weap2 = []
+			data_rules_jenisKek = []
+			data_rules_katKek = []
+			data_rules_benKek = []
+			data_rules_metaKek = []
 			converted_data = []
 			total_rules = 0
 			print_html = "Tidak ada rules"
@@ -1663,7 +1789,7 @@ def show_selection():
 
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
-	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, metaKek_data=metaKekJSON)
+	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, metaKek_data=metaKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek, data_rules_metaKek = data_rules_metaKek )
 
 @app.route('/selection')
 def load_selection():

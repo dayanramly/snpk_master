@@ -5,8 +5,9 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 	<title>SNPK - Sistem Nasional Pemantauan Kekerasan</title>
-	<link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet">
-	<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <!-- <link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet"> -->
 </head>
 <body>
     <nav class="navbar navbar-default nav-header">
@@ -75,37 +76,37 @@
         <div class="row row-button-charts">
             <div class="col-md-12 text-center button-charts">
                 {% if tahun_data %} 
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_tahun">Grafik Tahun</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_tahun">Grafik Tahun</button>
                 {% endif %}
                 {% if bulan_data %} 
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_bulan">Grafik Bulan</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_bulan">Grafik Bulan</button>
                 {% endif %}
                 {% if kabupaten_data %} 
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_kabupaten">Grafik Kabupaten</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_kabupaten">Grafik Kabupaten</button>
                 {% endif %}
                 {% if act1_data %} 
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_act1">Grafik Aktor 1</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_act1">Grafik Aktor 1</button>
                 {%endif %}
                 {% if act2_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_act2">Grafik Aktor 2</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_act2">Grafik Aktor 2</button>
                 {%endif %}
                 {% if weap1_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_weap1">Grafik Senjata 1</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_weap1">Grafik Senjata 1</button>
                 {%endif %}
                 {% if weap2_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_weap2">Grafik Senjata 2</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_weap2">Grafik Senjata 2</button>
                 {%endif %}
                 {% if jenisKek_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_jenisKek">Grafik Jenis Kekerasan</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_jenisKek">Grafik Jenis Kekerasan</button>
                 {%endif %}
                 {% if katKek_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_katKek">Grafik Kategori Tipe Kekerasan</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_katKek">Grafik Kategori Tipe Kekerasan</button>
                 {%endif %}
                 {% if benKek_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_benKek">Grafik Bentuk Kekerasan</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_benKek">Grafik Bentuk Kekerasan</button>
                 {%endif %}
                 {% if metaKek_data %}
-                    <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_metaKek">Grafik Meta Kekerasan</button>
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_metaKek">Grafik Meta Kekerasan</button>
                 {%endif %}
             </div>
         </div>
@@ -154,6 +155,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="kabupatenDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_kab|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -175,6 +179,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="bulanDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_bulan|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -196,11 +203,14 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="tahunDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_tahun|safe }}
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -217,6 +227,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="act1Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_act1|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -238,6 +251,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="act2Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_act2|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -259,6 +275,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="weap1Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_weap1|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -280,6 +299,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="weap2Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_weap2|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -301,6 +323,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="jenisKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_jenisKek|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -322,6 +347,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="katKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_katKek|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -343,6 +371,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="benKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_benKek|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -364,6 +395,9 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div id="metaKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_metaKek|safe }}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -381,6 +415,7 @@
 </footer>
 
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
+<!-- <script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/plotly-latest.min.js') }}"></script>
 <script type="text/javascript">
 
@@ -557,52 +592,53 @@
             }
         }
     };
+    // var data = {{data_rules_tahun|safe}};
+
+    // console.log(data);
+
+    // $(document).ready( function () {
+    //     $('#table-nasional').DataTable( {
+    //         data: data,
+    //         columns: [
+    //         { data: 'Tahun' },
+    //         { data: 'Rules' }
+    //         ]
+    //     } );
+    //     // $('#table-nasional').DataTable();
+    // } );
 
     $(function () {
-        var raw = {{raw_data | safe}}
-        var graph_kabupaten = {{kabupaten_data | safe}}
-        Plotly.newPlot('kabupatenDiv',graph_kabupaten,{});
-        var graph_bulan = {{bulan_data | safe}}
-        Plotly.newPlot('bulanDiv',graph_bulan,{});
-        var graph_tahun = {{tahun_data | safe}}
-        Plotly.newPlot('tahunDiv',graph_tahun,{});
-        var graph_act1 = {{act1_data | safe}}
-        Plotly.newPlot('act1Div',graph_act1,{});
-        var graph_act2 = {{act2_data | safe}}
-        Plotly.newPlot('act2Div',graph_act2,{});
-        var graph_weap1 = {{weap1_data | safe}}
-        Plotly.newPlot('weap1Div',graph_weap1,{});
-        var graph_weap2 = {{weap2_data | safe}}
-        Plotly.newPlot('weap2Div',graph_weap2,{});
-        var graph_jenisKek = {{jenisKek_data | safe}}
-        Plotly.newPlot('jenisKekDiv',graph_jenisKek,{});
-        var graph_katKek = {{katKek_data | safe}}
-        Plotly.newPlot('katKekDiv',graph_katKek,{});
-        var graph_benKek = {{benKek_data | safe}}
-        Plotly.newPlot('benKekDiv',graph_benKek,{});
-        var graph_metaKek = {{metaKek_data | safe}}
-        Plotly.newPlot('metaKekDiv',graph_metaKek,{});
+        var raw = {{raw_data | safe}};
+        var graph_kabupaten = {{kabupaten_data | safe}};
+        var graph_bulan = {{bulan_data | safe}};
+        var graph_tahun = {{tahun_data | safe}};
+        var graph_act1 = {{act1_data | safe}};
+        var graph_act2 = {{act2_data | safe}};
+        var graph_weap1 = {{weap1_data | safe}};
+        var graph_weap2 = {{weap2_data | safe}};
+        var graph_jenisKek = {{jenisKek_data | safe}};
+        var graph_katKek = {{katKek_data | safe}};
+        var graph_benKek = {{benKek_data | safe}};
+        var graph_metaKek = {{metaKek_data | safe}};
 
-        console.log(graph_kabupaten)
-        console.log(graph_bulan)
-        console.log(graph_tahun)
-        console.log(graph_act1)
-        console.log(graph_act2)
-        console.log(graph_weap1)
-        console.log(graph_weap2)
-        console.log(graph_jenisKek)
-        console.log(graph_katKek)
-        console.log(graph_benKek)
-        console.log(graph_metaKek)
-        // Plotly.newPlot('myDiv', data);
-        // Plotly.newPlot('myDiv',graphs,{});
-        // Plotly.newPlot('provDiv',graphProv,{});
+        var kabPlot = Plotly.newPlot('kabupatenDiv', graph_kabupaten, {});
+        var bulPlot = Plotly.newPlot('bulanDiv', graph_bulan, {});
+        var tahPlot = Plotly.newPlot('tahunDiv', graph_tahun, {});
+        var act1Plot = Plotly.newPlot('act1Div', graph_act1, {});
+        var act2Plot = Plotly.newPlot('act2Div', graph_act2, {});
+        var weap1Plot = Plotly.newPlot('weap1Div', graph_weap1, {});
+        var weap2Plot = Plotly.newPlot('weap2Div', graph_weap2, {});
+        var jenisKekPlot = Plotly.newPlot('jenisKekDiv', graph_jenisKek, {});
+        var katKekPlot = Plotly.newPlot('katKekDiv', graph_katKek, {});
+        var benKekPlot = Plotly.newPlot('benKekDiv', graph_benKek, {});
+        var metaKekPlot =  Plotly.newPlot('metaKekDiv', graph_metaKek, {});
+
         simplemaps_countrymap.hooks.click_state = function (id) {
           name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);
           $('#modal-' + name).modal('show');
       }
 
-  })
+  });
 
 </script>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/countrymap.js') }}"></script>
