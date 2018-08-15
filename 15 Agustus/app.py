@@ -112,7 +112,7 @@ def selected_files():
 		'url_path': request.args.getlist('filename')
 	}
 
-	data = json.dumps(data)
+	# data = json.dumps(data)
 
 	return render_template('selection.html', rows=data)
 
@@ -175,9 +175,13 @@ def show_selection():
 				return 0
 
 		#konversi biner data dimensi 4
+		snpkframe["kil_total"] = snpkframe["kil_total"].apply(clean_dampak)
 		snpkframe["kil_f"] = snpkframe["kil_f"].apply(clean_dampak)
+		snpkframe["inj_total"] = snpkframe["inj_total"].apply(clean_dampak)
 		snpkframe["inj_f"] = snpkframe["inj_f"].apply(clean_dampak)
+		snpkframe["kidnap_tot"] = snpkframe["kidnap_tot"].apply(clean_dampak)
 		snpkframe["kid_f"] = snpkframe["kid_f"].apply(clean_dampak)
+		snpkframe["sex_as_tot"] = snpkframe["sex_as_tot"].apply(clean_dampak)
 		snpkframe["sex_f"] = snpkframe["sex_f"].apply(clean_dampak)
 
 		#initiate new array
@@ -628,7 +632,7 @@ def show_selection():
 				arr_katkek = []
 				arr_benkek = []
 				arr_metkek = []
-
+			#     print index, row
 				for each_col in row:
 					if (each_col != None):
 						splitCol = each_col.split("-")
@@ -1328,8 +1332,6 @@ def show_selection():
 			jenisKekJSON = {}
 			katKekJSON = {}
 			benKekJSON = {}
-			lift_max = {}
-			lift_min = {}
 			data_rules_tahun = []
 			data_rules_bulan = []
 			data_rules_kab = []
@@ -1356,13 +1358,9 @@ def show_selection():
 				return 0
 
 		#konversi biner data dimensi 4
-		snpkframe["kil_total"] = snpkframe["kil_total"].apply(clean_dampak)
 		snpkframe["kil_f"] = snpkframe["kil_f"].apply(clean_dampak)
-		snpkframe["inj_total"] = snpkframe["inj_total"].apply(clean_dampak)
 		snpkframe["inj_f"] = snpkframe["inj_f"].apply(clean_dampak)
-		snpkframe["kidnap_tot"] = snpkframe["kidnap_tot"].apply(clean_dampak)
 		snpkframe["kid_f"] = snpkframe["kid_f"].apply(clean_dampak)
-		snpkframe["sex_as_tot"] = snpkframe["sex_as_tot"].apply(clean_dampak)
 		snpkframe["sex_f"] = snpkframe["sex_f"].apply(clean_dampak)
 
 		#initiate new array
@@ -1588,7 +1586,7 @@ def show_selection():
 		patterns = pyfpgrowth.find_frequent_patterns(convMatrix, min_sup)
 
 		# mencari rules dari pattern yang telah dibuat
-		rules = pyfpgrowth.generate_association_rules(patterns, min_conf, trans_total)
+		rules = pyfpgrowth.generate_association_rules(patterns, min_conf, )
 		timer = (time.time() - start_time)
 
 		if rules:
@@ -1619,7 +1617,7 @@ def show_selection():
 			new_cols = ['values' + str(i) for i in df_values_key.columns]
 			df_values_key.columns = new_cols[:total_columns_value]
 
-			result_join = pd.concat([df_key, df_values_key, df_values_conf, df_values_lift], axis=1, join_axes=[df_key.index])
+			result_join = pd.concat([df_key, df_values_key, df_values_conf], axis=1, join_axes=[df_key.index])
 
 			def f(row):
 				for col in row.index:
@@ -1666,8 +1664,6 @@ def show_selection():
 			jenisKekJSON = {}
 			katKekJSON = {}
 			benKekJSON = {}
-			lift_max = {}
-			lift_min = {}
 			data_rules_tahun = []
 			data_rules_bulan = []
 			data_rules_kab = []
@@ -1689,8 +1685,6 @@ def show_selection():
 			jenisKekJSON = {}
 			katKekJSON = {}
 			benKekJSON = {}
-			lift_max = {}
-			lift_min = {}
 			data_rules_tahun = []
 			data_rules_bulan = []
 			data_rules_kab = []
@@ -1708,7 +1702,7 @@ def show_selection():
 
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
-	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, lift_max = lift_max, lift_min = lift_min, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek)
+	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, lift_max = lift_max, lift_min = lift_min, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek )
 
 @app.route('/selection')
 def load_selection():

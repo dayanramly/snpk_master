@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>SNPK - Sistem Nasional Pemantauan Kekerasan</title>
+	<link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet">
+	<link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body>
+	<nav class="navbar navbar-default nav-header">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#default-header" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/start">
+					<img src="{{ url_for('static', filename='img/snpk_logo_white.png') }}">
+					<h2>Sistem Nasional Pemantauan Kekerasan</h2>
+				</a>
+			</div>
+
+			<div class="collapse navbar-collapse" id="default-header">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/">Keluar</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container snpk-import">
+		<div class="row snpk-import-header text-center">
+			<div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+				<h2>Seleksi Data</h2>
+			</div>
+		</div>
+	</div>
+	<div class="container-fluid snpk-import snpk-selection snpk-import-table">
+		<div class="container">
+			<form action="{{ url_for('show_selection') }}" method="post">
+
+				<div class="row">
+					<div class="col-md-12 selection-wrapper" id="selectionId">
+
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-1">
+										Dimensi 1
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi1_key" name="dimensi1_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="tahun">Level 1 - Tahun</option>
+									<option value="bulan">Level 2 - Bulan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi1_val" name="dimensi1" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-2">
+										Dimensi 2
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi2_key" name="dimensi2_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="provinsi">Level 1 - Provinsi</option>
+									<option value="kabupaten">Level 2 - Kabupaten</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi2_val" name="dimensi2" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-3">
+										Dimensi 3
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi3_key" name="dimensi3_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="actor1">Level 1 - Jenis Aktor</option>
+									<option value="actor2">Level 2 - Jenis Aktor</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi3_val" name="dimensi3" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-4">
+										Dimensi 4
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi4_key" name="dimensi4_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="dampak-f">Level 1 - Dampak</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi4_val" name="dimensi4" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-5">
+										Dimensi 5
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi5_key" name="dimensi5_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="weapon_1">Level 1 - Jenis Senjata 1</option>
+									<option value="weapon_2">Level 2 - Jenis Senjata 2</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi5_val" name="dimensi5" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-6">
+										Dimensi 6
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi6_key" name="dimensi6_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="jenis_kek">Level 1 - Jenis Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi6_val" name="dimensi6" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-7">
+										Dimensi 7
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi7_key" name="dimensi7_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="tp_kek">Level 1 - Kategori Tipe Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi7_val" name="dimensi7" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-md-3">
+								<div class="checkbox">
+									<label>
+										<input type="checkbox" name="dimensi-8">
+										Dimensi 8
+									</label>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<select class="form-control select-form" id="dimensi8_key" name="dimensi8_key" disabled>
+									<option value="all">Semua Level</option>
+									<option value="ben_kek">Level 1 - Bentuk Kekerasan</option>
+								</select>
+							</div>
+							<div class="col-md-5">
+								<select class="form-control select-form" id="dimensi8_val" name="dimensi8" disabled>
+									<option value="all">Semua Objek</option>
+								</select>
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3 selection-wrapper selection-wrapper-minsup">
+						<div class="row selection-minsup-header">
+							<div class="col-md-12">
+								<h4>Minimum Support dan Minimum Confident</h4>
+							</div>
+						</div>
+						<div class="row selection-minsup">
+							<div class="col-md-8 col-md-offset-2 text-center">
+								<span>Total data</span>
+								<div class="form-group">
+									<p id="row_total"></p>
+								</div>
+							</div>
+						</div>
+						<div class="row selection-minsup">
+							<div class="col-md-6">
+								<span>Minimum Support</span>
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" class="form-control" id="minsup-1" name="minsup-1">
+										<div class="input-group-addon"></div>
+									</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<span>Minimum Confident</span>
+								<div class="form-group">
+									<div class="input-group">
+										<input type="text" class="form-control" id="minconf-1" name="minconf-1">
+										<div class="input-group-addon">%</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row selection-minsup" hidden>
+							<div class="col-md-3">
+								<p>File Selected</p>
+							</div>
+							<div class="col-md-9">
+								<div class="form-group">
+									<div class="input-group">
+										<!-- <p id="file_selected" name="file_selected"></p> -->
+										<input type="text" class="form-control" id="file_selected" name="file_selected" value="">
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 selection-wrapper text-center">
+						<button class="btn btn-green btn-normal" type="submit" name="action" value="SingleDimension">
+							<i class="ion-minus-round"></i>
+							Single Dimension
+						</button>
+						<button class="btn btn-green btn-normal" type="submit" name="action" value="MultiDimension">
+							<i class="ion-navicon-round"></i>
+							Multi Dimension
+						</button>
+					</div>
+				</div>
+			</form>
+
+		</div>
+	</div>
+
+	<!-- footer section -->
+	<footer class="dd-footer">
+
+	</footer>
+
+	<script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
+	<script type="text/javascript">
+		$(function () {
+			var data = {{ rows | safe }}
+			console.log(data)
+			console.log(data.url_path)
+			$("#row_total").html(data.row_total)
+			$("#file_selected").val(data.url_path)
+
+			var el = document.getElementById('selectionId');
+
+			// get reference to input elements in toppings container element
+			var tops = el.getElementsByTagName('input');
+
+			for (var i=0, len=tops.length; i<len; i++) {
+				if ( tops[i].type === 'checkbox' ) {
+					tops[i].onclick = function() {
+						if (this.checked ) {
+							$(this).closest("div.col-md-3").next().find("select.select-form").prop("disabled", false);
+							$(this).closest("div.col-md-3").next().next().find("select.select-form").prop("disabled", false);
+						} else {
+							$(this).closest("div.col-md-3").next().find("select.select-form").attr('disabled','disabled');
+							$(this).closest("div.col-md-3").next().next().find("select.select-form").attr('disabled','disabled');
+						}
+					}
+				}
+			}
+
+
+			// dimensi1
+			$("#dimensi1_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi1_val").html(opt)
+				}
+
+				if ($(this).val() === 'tahun') {
+					var tahun_opt = '<option value="all">Semua Tahun</option>';
+					for (var i = 0, len = data.tahun.length; i < len; i++) {
+						tahun_opt = tahun_opt + '<option value="'+ data.tahun[i] +'">'+ data.tahun[i] +'</option>'
+					}
+
+					console.log(tahun_opt);
+					$("#dimensi1_val").html(tahun_opt)
+				}
+
+				if ($(this).val() === 'bulan') {
+					var bulan_opt = '<option value="all">Semua Bulan</option>';
+					for (var i = 0, len = data.bulan.length; i < len; i++) {
+						bulan_opt = bulan_opt + '<option value="'+ data.bulan_val[i] +'">'+ data.bulan[i] +'</option>'
+					}
+
+					console.log(bulan_opt);
+					$("#dimensi1_val").html(bulan_opt)
+				}
+
+			});
+			// dimensi2
+			$("#dimensi2_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi2_val").html(opt)
+				}
+
+				if ($(this).val() === 'provinsi') {
+					var provinsi_opt = '<option value="all">Semua Provinsi</option>';
+					for (var i = 0, len = data.provinsi.length; i < len; i++) {
+						provinsi_opt = provinsi_opt + '<option value="'+ data.provinsi[i] +'">'+ data.provinsi[i] +'</option>'
+					}
+
+					console.log(provinsi_opt);
+					$("#dimensi2_val").html(provinsi_opt)
+				}
+
+				if ($(this).val() === 'kabupaten') {
+					var kabupaten_opt = '<option value="all">Semua Kabupaten</option>';
+					for (var i = 0, len = data.kabupaten.length; i < len; i++) {
+						kabupaten_opt = kabupaten_opt + '<option value="'+ data.kabupaten[i] +'">'+ data.kabupaten[i] +'</option>'
+					}
+
+					console.log(kabupaten_opt);
+					$("#dimensi2_val").html(kabupaten_opt)
+				}
+
+			});
+
+			// dimensi3
+			$("#dimensi3_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi3_val").html(opt)
+				}
+
+				if ($(this).val() === 'actor1') {
+					var actor1_opt = '<option value="all">Semua Jenis Aktor 1</option>';
+					for (var i = 0, len = data.actor_s1_tp.length; i < len; i++) {
+						actor1_opt = actor1_opt + '<option value="'+ data.actor_s1_val[i] +'">'+ data.actor_s1_tp[i] +'</option>'
+					}
+
+					console.log(actor1_opt);
+					$("#dimensi3_val").html(actor1_opt)
+				}
+
+				if ($(this).val() === 'actor2') {
+					var actor2_opt = '<option value="all">Semua Jenis Aktor 2</option>';
+					for (var i = 0, len = data.actor_s2_tp.length; i < len; i++) {
+						actor2_opt = actor2_opt + '<option value="'+ data.actor_s2_val[i] +'">'+ data.actor_s2_tp[i] +'</option>'
+					}
+
+					console.log(actor2_opt);
+					$("#dimensi3_val").html(actor2_opt)
+				}
+
+			});
+
+			// dimensi4
+			$("#dimensi4_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi4_val").html(opt)
+				}
+
+				if ($(this).val() === 'dampak-f') {
+					var kek_f_opt = '<option value="all">Semua Dampak</option>';
+					for (var i = 0, len = data.kek_f.length; i < len; i++) {
+						kek_f_opt = kek_f_opt + '<option value="'+ data.kek_f_key[i] +'">'+ data.kek_f[i] +'</option>'
+					}
+
+					console.log(kek_f_opt);
+					$("#dimensi4_val").html(kek_f_opt)
+				}
+
+			});
+
+			// dimensi5
+			$("#dimensi5_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi5_val").html(opt)
+				}
+
+				if ($(this).val() === 'weapon_1') {
+					var weapon_1_opt = '<option value="all">Semua Senjata Level 1</option>';
+					for (var i = 0, len = data.weapon_1.length; i < len; i++) {
+						weapon_1_opt = weapon_1_opt + '<option value="'+ data.weapon_1_val[i] +'">'+ data.weapon_1[i] +'</option>'
+					}
+
+					console.log(weapon_1_opt);
+					$("#dimensi5_val").html(weapon_1_opt)
+				}
+
+				if ($(this).val() === 'weapon_2') {
+					var weapon_2_opt = '<option value="all">Semua Senjata Level 2</option>';
+					for (var i = 0, len = data.weapon_2.length; i < len; i++) {
+						weapon_2_opt = weapon_2_opt + '<option value="'+ data.weapon_2_val[i] +'">'+ data.weapon_2[i] +'</option>'
+					}
+
+					console.log(weapon_2_opt);
+					$("#dimensi5_val").html(weapon_2_opt)
+				}
+
+			});
+
+			// dimensi6
+			$("#dimensi6_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi6_val").html(opt)
+				}
+
+				if ($(this).val() === 'jenis_kek') {
+					var jenis_kek_opt = '<option value="all">Semua Jenis Kekerasan</option>';
+					for (var i = 0, len = data.jenis_kek.length; i < len; i++) {
+						jenis_kek_opt = jenis_kek_opt + '<option value="'+ data.jenis_kek_val[i] +'">'+ data.jenis_kek[i] +'</option>'
+					}
+
+					console.log(jenis_kek_opt);
+					$("#dimensi6_val").html(jenis_kek_opt)
+				}
+
+			});
+
+			// dimensi7
+			$("#dimensi7_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi7_val").html(opt)
+				}
+
+				if ($(this).val() === 'tp_kek') {
+					var tp_kek1_new_opt = '<option value="all">Semua Tipe Kekerasan</option>';
+					for (var i = 0, len = data.tp_kek1_new.length; i < len; i++) {
+						tp_kek1_new_opt = tp_kek1_new_opt + '<option value="'+ data.tp_kek1_val[i] +'">'+ data.tp_kek1_new[i] +'</option>'
+					}
+
+					console.log(tp_kek1_new_opt);
+					$("#dimensi7_val").html(tp_kek1_new_opt)
+				}
+
+			});
+
+			// dimensi8
+			$("#dimensi8_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi8_val").html(opt)
+				}
+
+				if ($(this).val() === 'ben_kek') {
+					var ben_kek1_opt = '<option value="all">Semua Bentuk Kekerasan</option>';
+					for (var i = 0, len = data.ben_kek1.length; i < len; i++) {
+						ben_kek1_opt = ben_kek1_opt + '<option value="'+ data.ben_kek1_val[i] +'">'+ data.ben_kek1[i] +'</option>'
+					}
+
+					console.log(ben_kek1_opt);
+					$("#dimensi8_val").html(ben_kek1_opt)
+				}
+
+			});
+
+			// dimensi9
+			$("#dimensi9_key").change(function () {
+				if ($(this).val() === 'all') {
+					var opt = '<option value="all">Semua Objek</option>'
+					$("#dimensi9_val").html(opt)
+				}
+
+				if ($(this).val() === 'meta_kek') {
+					var meta_kek_opt = '<option value="all">Semua Meta Jenis Kekerasan</option>';
+					for (var i = 0, len = data.meta_kek.length; i < len; i++) {
+						meta_kek_opt = meta_kek_opt + '<option value="'+ data.meta_kek_val[i] +'">'+ data.meta_kek[i] +'</option>'
+					}
+
+					console.log(meta_kek_opt);
+					$("#dimensi9_val").html(meta_kek_opt)
+				}
+
+			});
+
+
+		});
+	</script>
+</body>
+</html>

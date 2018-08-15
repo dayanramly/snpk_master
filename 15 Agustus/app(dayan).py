@@ -175,9 +175,13 @@ def show_selection():
 				return 0
 
 		#konversi biner data dimensi 4
+		snpkframe["kil_total"] = snpkframe["kil_total"].apply(clean_dampak)
 		snpkframe["kil_f"] = snpkframe["kil_f"].apply(clean_dampak)
+		snpkframe["inj_total"] = snpkframe["inj_total"].apply(clean_dampak)
 		snpkframe["inj_f"] = snpkframe["inj_f"].apply(clean_dampak)
+		snpkframe["kidnap_tot"] = snpkframe["kidnap_tot"].apply(clean_dampak)
 		snpkframe["kid_f"] = snpkframe["kid_f"].apply(clean_dampak)
+		snpkframe["sex_as_tot"] = snpkframe["sex_as_tot"].apply(clean_dampak)
 		snpkframe["sex_f"] = snpkframe["sex_f"].apply(clean_dampak)
 
 		#initiate new array
