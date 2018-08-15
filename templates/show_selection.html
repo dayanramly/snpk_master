@@ -117,9 +117,6 @@
                 {% if benKek_data %}
                 <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_benKek">Grafik Bentuk Kekerasan</button>
                 {%endif %}
-                {% if metaKek_data %}
-                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_metaKek">Grafik Meta Kekerasan</button>
-                {%endif %}
             </div>
         </div>
 
@@ -395,30 +392,6 @@
         </div>
     </div>
 </div>
-<div class="modal fade" id="modal-graph_metaKek" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-    <div class="modal-dialog modal-lg snpk-modal" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                    aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div id="modal-body" class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="metaKekDiv" style="height: 500px"></div>
-                        <div class="table-responsive table-rules">
-                            {{ data_rules_metaKek|safe }}
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 </body>
 <!-- footer section -->
@@ -631,7 +604,6 @@
         var graph_jenisKek = {{jenisKek_data | safe}};
         var graph_katKek = {{katKek_data | safe}};
         var graph_benKek = {{benKek_data | safe}};
-        var graph_metaKek = {{metaKek_data | safe}};
 
         var kabPlot = Plotly.newPlot('kabupatenDiv', graph_kabupaten, {});
         var bulPlot = Plotly.newPlot('bulanDiv', graph_bulan, {});
@@ -643,7 +615,6 @@
         var jenisKekPlot = Plotly.newPlot('jenisKekDiv', graph_jenisKek, {});
         var katKekPlot = Plotly.newPlot('katKekDiv', graph_katKek, {});
         var benKekPlot = Plotly.newPlot('benKekDiv', graph_benKek, {});
-        var metaKekPlot =  Plotly.newPlot('metaKekDiv', graph_metaKek, {});
 
         simplemaps_countrymap.hooks.click_state = function (id) {
           name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);

@@ -123,8 +123,7 @@
 							<div class="col-md-4">
 								<select class="form-control select-form" id="dimensi4_key" name="dimensi4_key" disabled>
 									<option value="all">Semua Level</option>
-									<option value="dampak-all">Level 1 - Dampak Keseluruhan</option>
-									<option value="dampak-f">Level 2 - Dampak Terhadap Perempuan</option>
+									<option value="dampak-f">Level 1 - Dampak</option>
 								</select>
 							</div>
 							<div class="col-md-5">
@@ -214,27 +213,6 @@
 							</div>
 							<div class="col-md-5">
 								<select class="form-control select-form" id="dimensi8_val" name="dimensi8" disabled>
-									<option value="all">Semua Objek</option>
-								</select>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-3">
-								<div class="checkbox">
-									<label>
-										<input type="checkbox" name="dimensi-9">
-										Dimensi 9
-									</label>
-								</div>
-							</div>
-							<div class="col-md-4">
-								<select class="form-control select-form" id="dimensi9_key" name="dimensi9_key" disabled>
-									<option value="all">Semua Level</option>
-									<option value="meta_kek">Level 1 -  Meta Jenis Kekerasan</option>
-								</select>
-							</div>
-							<div class="col-md-5">
-								<select class="form-control select-form" id="dimensi9_val" name="dimensi9" disabled>
 									<option value="all">Semua Objek</option>
 								</select>
 							</div>
@@ -436,19 +414,8 @@
 					$("#dimensi4_val").html(opt)
 				}
 
-				if ($(this).val() === 'dampak-all') {
-					console.log(data.kek_all.length)
-					var kek_all_opt = '<option value="all">Semua Dampak Keseluruhan</option>';
-					for (var i = 0, len = data.kek_all.length; i < len; i++) {
-						kek_all_opt = kek_all_opt + '<option value="'+ data.kek_all_key[i] +'">'+ data.kek_all[i] +'</option>'
-					}
-
-					console.log(kek_all_opt);
-					$("#dimensi4_val").html(kek_all_opt)
-				}
-
 				if ($(this).val() === 'dampak-f') {
-					var kek_f_opt = '<option value="all">Semua Dampak Perempuan</option>';
+					var kek_f_opt = '<option value="all">Semua Dampak</option>';
 					for (var i = 0, len = data.kek_f.length; i < len; i++) {
 						kek_f_opt = kek_f_opt + '<option value="'+ data.kek_f_key[i] +'">'+ data.kek_f[i] +'</option>'
 					}

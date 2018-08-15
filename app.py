@@ -20,7 +20,7 @@ import time
 import math
 
 from util import translate_bulan, translate_actor, translate_weapon, translate_jenis_kek, translate_tipe_kekerasan, \
-	translate_bentuk_kekerasan, translate_meta_kekerasan
+	translate_bentuk_kekerasan
 
 app = Flask('snpk', template_folder='templates')
 app.config['UPLOAD_FOLDER'] = 'uploadfiles'
@@ -83,18 +83,14 @@ def selected_files():
 	#data yang diambil hanya data kekerasan terhadap perempuan (EKSTRAKSI DATA)
 	snpkframe = snpkframe.loc[(snpkframe["kil_f"] > 0) | (snpkframe["inj_f"] > 0) | (snpkframe["kid_f"] > 0) | (snpkframe["sex_f"] > 0)]
 
-	kek_all = ['Terbunuh', 'Luka-Luka', 'Penculikan', 'Pelecehan Seksual', 'Bangunan Rusak']
-	kek_all_key = ['kil_total', 'inj_total', 'kidnap_tot', 'sex_as_tot', 'build_dmg_total']
-	kek_f = ['Perempuan Terbunuh', 'Perempuan Luka-Luka', 'Penculikan Perempuan', 'Pelecehan Seksual Perempuan']
-	kek_f_key = ['kil_f', 'inj_f', 'kid_f', 'sex_f', 'build_dmg_total']
+	kek_f = ['Terbunuh', 'Luka-Luka', 'Penculikan', 'Pelecehan Seksual']
+	kek_f_key = ['kil_f', 'inj_f', 'kid_f', 'sex_f']
 
 	data = {
 		'tahun': [x for x in snpkframe.tahun.unique()],
 		'bulan_val': [x for x in snpkframe.bulan.unique()],
 		'provinsi': [x for x in snpkframe.provinsi.unique()],
 		'kabupaten': [x for x in snpkframe.kabupaten.unique()],
-		'kek_all': [x for x in kek_all],
-		'kek_all_key': [x for x in kek_all_key],
 		'kek_f': [x for x in kek_f],
 		'kek_f_key': [x for x in kek_f_key],
 		'actor_s1_val': [x for x in snpkframe.actor_s1_tp.unique()],
@@ -104,7 +100,6 @@ def selected_files():
 		'jenis_kek_val': [x for x in snpkframe.jenis_kek.unique()],
 		'tp_kek1_val': [x for x in snpkframe.tp_kek1_new.unique()],
 		'ben_kek1_val': [x for x in snpkframe.ben_kek1.unique()],
-		'meta_kek_val': [x for x in snpkframe.meta_tp_kek1_new.unique()],
 		'bulan': [translate_bulan(x) for x in snpkframe.bulan.unique()],
 		'actor_s1_tp': [translate_actor(x) for x in snpkframe.actor_s1_tp.unique()],
 		'actor_s2_tp': [translate_actor(x) for x in snpkframe.actor_s2_tp.unique()],
@@ -113,7 +108,6 @@ def selected_files():
 		'jenis_kek': [translate_jenis_kek(x) for x in snpkframe.jenis_kek.unique()],
 		'tp_kek1_new': [translate_tipe_kekerasan(x) for x in snpkframe.tp_kek1_new.unique()],
 		'ben_kek1': [translate_bentuk_kekerasan(x) for x in snpkframe.ben_kek1.unique()],
-		'meta_kek': [translate_meta_kekerasan(x) for x in snpkframe.meta_tp_kek1_new.unique()],
 		'row_total': len(snpkframe.index),
 		'url_path': request.args.getlist('filename')
 	}
@@ -353,16 +347,6 @@ def show_selection():
 			con_dimensi.append('"ben_kek1"')
 			con_dimensi_enc.append('"8-" + snpkframe3["ben_kek1"].astype(str)')
 
-		# kondisi dimensi 9
-		if dimensi9_key:
-			if dimensi9_key == 'meta_kek':
-				if dimensi9 != 'all':
-					con.append('(snpkframe2["meta_tp_kek1_new"]==' + dimensi9 + ')')
-				else:
-					con.append('(snpkframe2["meta_tp_kek1_new"].notnull())')
-			con_dimensi.append('"meta_tp_kek1_new"')
-			con_dimensi_enc.append('"9-" + snpkframe3["meta_tp_kek1_new"].astype(str)')
-
 		# join array dan konversi ke string
 		sep = " & "
 		sep_dim = ","
@@ -426,9 +410,6 @@ def show_selection():
 				elif (dim=='ben_kek1'):
 					for key, value in listgroupby["ben_kek1"].iteritems():
 						listgroupby["ben_kek1"][translate_bentuk_kekerasan(key)] = listgroupby["ben_kek1"].pop(key)
-				elif (dim=='meta_tp_kek1_new'):
-					for key, value in listgroupby["meta_tp_kek1_new"].iteritems():
-						listgroupby["meta_tp_kek1_new"][translate_meta_kekerasan(key)] = listgroupby["meta_tp_kek1_new"].pop(key)
 
 		#merubah nama column dengan prefix dim
 		for index, x in enumerate(con_dimensi_enc):
@@ -507,9 +488,6 @@ def show_selection():
 							elif splitCol[0] == '8':
 								arr.append("dengan bentuk kekerasan " + translate_bentuk_kekerasan(int(splitCol[1])))
 								arr_benkek.append(translate_bentuk_kekerasan(int(splitCol[1])))
-							elif splitCol[0] == '9':
-								arr.append("dengan meta jenis kekerasan " + translate_meta_kekerasan(int(splitCol[1])))
-								arr_metkek.append(translate_meta_kekerasan(int(splitCol[1])))
 						elif len(splitCol) == 3:
 							if (splitCol[0] == '1'):
 								arr.append("pada tahun " + splitCol[1])
@@ -682,9 +660,6 @@ def show_selection():
 							elif splitCol[0] == '8':
 								arr.append("dengan bentuk kekerasan " + translate_bentuk_kekerasan(int(splitCol[1])))
 								arr_benkek.append(translate_bentuk_kekerasan(int(splitCol[1])))
-							elif splitCol[0] == '9':
-								arr.append("dengan meta jenis kekerasan " + translate_meta_kekerasan(int(splitCol[1])))
-								arr_metkek.append(translate_meta_kekerasan(int(splitCol[1])))
 						elif len(splitCol) == 3:
 							if (splitCol[0] == '1'):
 								arr.append("pada tahun " + splitCol[1])
@@ -891,14 +866,6 @@ def show_selection():
 					return row.ben_kek
 				else:
 					return np.nan
-				
-			def check_meta(row):
-				if (isinstance(row.List_met_kek, str)) & (isinstance(row.met_kek, float)):
-					return row.List_met_kek
-				elif (isinstance(row.met_kek, str)) & (isinstance(row.List_met_kek, float)):
-					return row.met_kek
-				else:
-					return np.nan
 
 			# apply function for join two column
 			if 'Loc' in result_join_decode.columns:
@@ -923,8 +890,6 @@ def show_selection():
 				result_join_decode['ResultKatKek'] = result_join_decode.apply(check_kat, axis=1)
 			if 'List_ben_kek' in result_join_decode.columns:
 				result_join_decode['ResultBenKek'] = result_join_decode.apply(check_bentuk, axis=1)
-			if 'List_met_kek' in result_join_decode.columns:
-				result_join_decode['ResultMetaKek'] = result_join_decode.apply(check_meta, axis=1)
 	
 			# dataframe for table
 			result_join_count = result_join_decode.loc[:, result_join_decode.columns.to_series().str.contains('Result').tolist()]
@@ -1329,48 +1294,6 @@ def show_selection():
 			else:
 				benKekJSON = {}
 				data_rules_benKek = []
-				
-			if 'ResultMetaKek' in result_join_count.columns:
-				group_metaKek = result_join_count['ResultMetaKek'].groupby(result_join_count['ResultMetaKek']).count()
-				group_metaKek_result = result_join_count['Result'].groupby(result_join_count['ResultMetaKek'])
-				dict_metaKek_rules = defaultdict(list)
-				for key, item in group_metaKek_result:
-					dict_metaKek_rules[key].append(item)
-				dict_benKek = defaultdict(list)
-				dict_metaKek = defaultdict(list)
-				for k, v in chain(listgroupby['meta_tp_kek1_new'].items(), group_metaKek.items(), dict_metaKek_rules.items()):
-					if (not listgroupby['meta_tp_kek1_new'].empty):
-						dict_metaKek[k].append(v)
-					if group_metaKek.empty:
-						v = 0
-						dict_metaKek[k].append(v)
-				metaKek_to_df = pd.DataFrame.from_dict(dict_metaKek, orient='index').reset_index().fillna(0)
-				metaKek_to_df.columns = ['MetaKekerasan', 'semua', 'jml_rules', 'Rules']
-				# chart meta kekerasan
-				metaKek_semua = Bar(x=metaKek_to_df.MetaKekerasan,
-					y=metaKek_to_df.semua,
-					name='Semua Data',
-					marker=dict(color='rgb(55, 83, 109)'))
-				metaKek_rules = Bar(x=metaKek_to_df.MetaKekerasan,
-					y=metaKek_to_df.jml_rules,
-					name='Rules Yang Didapat',
-					marker=dict(color='rgb(255, 145, 15)'))
-				data = [metaKek_semua, metaKek_rules]
-				layout = Layout(title="Data Meta Kekerasan",
-								yaxis=dict(title='Jumlah Data'),
-								legend=dict(x=0,y=1.0),
-								autosize=True,
-								width=860)
-				metaKek = Figure(data=data, layout=layout)
-				
-				metaKekJSON = json.dumps(metaKek, cls=plotly.utils.PlotlyJSONEncoder)
-				metaKek_export_rules = metaKek_to_df.loc[metaKek_to_df['jml_rules'] > 0]
-				metaKek_export_rules = metaKek_export_rules[['MetaKekerasan', 'list_rules']]
-				data_rules_metaKek = json2html.convert(json=metaKek_export_rules.to_json(orient='records'), table_attributes="id=\"info-table\" class=\"table\"")
-			else:
-				metaKekJSON = {}
-				data_rules_metaKek = []
-
 
 			# dataframe for map
 			result_join_decode['ResultLoc'] = result_join_decode.apply(check_loc, axis=1)
@@ -1409,7 +1332,6 @@ def show_selection():
 			jenisKekJSON = {}
 			katKekJSON = {}
 			benKekJSON = {}
-			metaKekJSON = {}
 			lift_max = {}
 			lift_min = {}
 			data_rules_tahun = []
@@ -1422,7 +1344,6 @@ def show_selection():
 			data_rules_jenisKek = []
 			data_rules_katKek = []
 			data_rules_benKek = []
-			data_rules_metaKek = []
 			converted_data = []
 			total_rules = 0
 			print_html = "Tidak ada rules"
@@ -1619,17 +1540,6 @@ def show_selection():
 			con_dimensi.append('"ben_kek1"')
 			con_dimensi_enc.append('"8-" + snpkframe3["ben_kek1"].astype(str)')
 
-		# kondisi dimensi 9
-		if dimensi9_key:
-			if dimensi9_key == 'meta_kek':
-				if dimensi9 != 'all':
-					con.append('(snpkframe2["meta_tp_kek1_new"]==' + dimensi9 + ')')
-				else:
-					con.append('(snpkframe2["meta_tp_kek1_new"].notnull())')
-			con_dimensi.append('"meta_tp_kek1_new"')
-			con_dimensi_enc.append('"9-" + snpkframe3["meta_tp_kek1_new"].astype(str)')
-
-
 		# join array dan konversi ke string
 		sep = " & "
 		sep_dim = ","
@@ -1760,7 +1670,6 @@ def show_selection():
 			jenisKekJSON = {}
 			katKekJSON = {}
 			benKekJSON = {}
-			metaKekJSON = {}
 			lift_max = {}
 			lift_min = {}
 			data_rules_tahun = []
@@ -1773,7 +1682,6 @@ def show_selection():
 			data_rules_jenisKek = []
 			data_rules_katKek = []
 			data_rules_benKek = []
-			data_rules_metaKek = []
 		else:
 			tahunJSON = {}
 			blnJSON = {}
@@ -1785,7 +1693,6 @@ def show_selection():
 			jenisKekJSON = {}
 			katKekJSON = {}
 			benKekJSON = {}
-			metaKekJSON = {}
 			lift_max = {}
 			lift_min = {}
 			data_rules_tahun = []
@@ -1798,7 +1705,6 @@ def show_selection():
 			data_rules_jenisKek = []
 			data_rules_katKek = []
 			data_rules_benKek = []
-			data_rules_metaKek = []
 			converted_data = []
 			total_rules = 0
 			print_html = "Tidak ada rules"
@@ -1806,7 +1712,7 @@ def show_selection():
 
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
-	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, lift_max = lift_max, lift_min = lift_min, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, metaKek_data=metaKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek, data_rules_metaKek = data_rules_metaKek )
+	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, lift_max = lift_max, lift_min = lift_min, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek)
 
 @app.route('/selection')
 def load_selection():
