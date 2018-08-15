@@ -57,17 +57,29 @@
 
     <div class="container-fluid snpk-selection-result">
         <div class="row result-row">
-            <div class="col-md-6 col-md-offset-3 result-row-container">
-                <div class="col-md-6 text-center result-block">
+            <div class="col-md-12 result-row-container">
+                <div class="col-md-3 text-center result-block">
                     <div class="result-block-content">
                         <h4>Rules</h4>
                         <span>{{ total_rules }}</span>
                     </div>
                 </div>
-                <div class="col-md-6 text-center result-block">
+                <div class="col-md-3 text-center result-block">
                     <div class="result-block-content">
                         <h4>Waktu Eksekusi</h4>
                         <span>{{ time_exe }} </span><span class="second-mark">s</span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center result-block">
+                    <div class="result-block-content">
+                        <h4>Lift Max</h4>
+                        <span> {{ lift_max }} </span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center result-block">
+                    <div class="result-block-content">
+                        <h4>Lift Min</h4>
+                        <span> {{ lift_min }} </span>
                     </div>
                 </div>
             </div>

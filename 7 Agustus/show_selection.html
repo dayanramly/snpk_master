@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	<title>SNPK - Sistem Nasional Pemantauan Kekerasan</title>
+    <link href="{{ url_for('static', filename='css/style.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+    <!-- <link href="//cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet"> -->
+</head>
+<body>
+    <nav class="navbar navbar-default nav-header">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#default-header" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="/start">
+                    <img src="{{ url_for('static', filename='img/snpk_logo_white.png') }}">
+                    <h2>Sistem Nasional Pemantauan Kekerasan</h2>
+                </a>
+            </div>
+
+            <div class="collapse navbar-collapse" id="default-header">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/">Keluar</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid snpk-selection-map">
+        <div class="row selection-map-header text-center">
+            <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
+                <h2>Peta Pola Kekerasan Terhadap Perempuan <br />di Indonesia</h2>
+            </div>
+        </div>
+        <div class="row selection-map">
+            <div class="col-md-12">
+                <div id="map"></div>
+            </div>
+        </div>
+        <div class="row selection-province">
+            <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12 text-center">
+
+                {% for d in converted_data %}
+                <span class="label label-primary label-light-blue"> {{ d['ResultLoc'] }} ({{ d['Value']|length }})</span>
+                {% endfor %}
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid snpk-selection-result">
+        <div class="row result-row">
+            <div class="col-md-12 result-row-container">
+                <div class="col-md-3 text-center result-block">
+                    <div class="result-block-content">
+                        <h4>Rules</h4>
+                        <span>{{ total_rules }}</span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center result-block">
+                    <div class="result-block-content">
+                        <h4>Waktu Eksekusi</h4>
+                        <span>{{ time_exe }} </span><span class="second-mark">s</span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center result-block">
+                    <div class="result-block-content">
+                        <h4>Lift Max</h4>
+                        <span> {{ lift_max }} </span>
+                    </div>
+                </div>
+                <div class="col-md-3 text-center result-block">
+                    <div class="result-block-content">
+                        <h4>Lift Min</h4>
+                        <span> {{ lift_min }} </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row row-button-charts">
+            <div class="col-md-12 text-center button-charts">
+                {% if tahun_data %} 
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_tahun">Grafik Tahun</button>
+                {% endif %}
+                {% if bulan_data %} 
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_bulan">Grafik Bulan</button>
+                {% endif %}
+                {% if kabupaten_data %} 
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_kabupaten">Grafik Kabupaten</button>
+                {% endif %}
+                {% if act1_data %} 
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_act1">Grafik Aktor 1</button>
+                {%endif %}
+                {% if act2_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_act2">Grafik Aktor 2</button>
+                {%endif %}
+                {% if weap1_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_weap1">Grafik Senjata 1</button>
+                {%endif %}
+                {% if weap2_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_weap2">Grafik Senjata 2</button>
+                {%endif %}
+                {% if jenisKek_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_jenisKek">Grafik Jenis Kekerasan</button>
+                {%endif %}
+                {% if katKek_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_katKek">Grafik Kategori Tipe Kekerasan</button>
+                {%endif %}
+                {% if benKek_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_benKek">Grafik Bentuk Kekerasan</button>
+                {%endif %}
+                {% if metaKek_data %}
+                <button type="button" class="btn btn-green btn-normal" data-toggle="modal" data-target="#modal-graph_metaKek">Grafik Meta Kekerasan</button>
+                {%endif %}
+            </div>
+        </div>
+
+        <div class="row national-table-row">
+            <div class="col-md-12">
+                <h3>Analisis Asosiasi Kekerasan Nasional</h3>
+                <div class="table-responsive table-nasional">
+                    {{ data|safe }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for d in converted_data %}
+    <div class="modal fade" id="modal-{{ d['ResultLoc'].lower().replace(' ', '') }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+     <div class="modal-dialog modal-lg snpk-modal" role="document">
+      <div class="modal-content">
+       <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+         aria-hidden="true">&times;</span>
+     </button>
+ </div>
+ <div id="modal-body" class="modal-body">
+    <div class="table-responsive table-nasional">
+     {{ d['html'] | safe }}
+ </div>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+</div>
+</div>
+</div>
+</div>
+{% endfor %}
+
+<div class="modal fade" id="modal-graph_kabupaten" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="kabupatenDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_kab|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_bulan" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="bulanDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_bulan|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_tahun" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="tahunDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_tahun|safe }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_act1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="act1Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_act1|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_act2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="act2Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_act2|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_weap1" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="weap1Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_weap1|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_weap2" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="weap2Div" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_weap2|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_jenisKek" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="jenisKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_jenisKek|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_katKek" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="katKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_katKek|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_benKek" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="benKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_benKek|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="modal-graph_metaKek" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg snpk-modal" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                    aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div id="modal-body" class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="metaKekDiv" style="height: 500px"></div>
+                        <div class="table-responsive table-rules">
+                            {{ data_rules_metaKek|safe }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<!-- footer section -->
+<footer class="dd-footer">
+
+</footer>
+
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/scripts.min.js') }}"></script>
+<!-- <script type="text/javascript" src="//cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script> -->
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/plotly-latest.min.js') }}"></script>
+<script type="text/javascript">
+
+	var simplemaps_countrymap_mapdata = {
+		main_settings: {
+            //General settings
+
+            width: "responsive", //or 'responsive'
+            background_color: "#FFFFFF",
+            background_transparent: "yes",
+            border_color: "#ffffff",
+            pop_ups: "detect",
+
+            //State defaults
+            state_description: "Click for more details",
+            state_color: "#88A4BC",
+            state_hover_color: "#3B729F",
+            state_url: "",
+            border_size: 1.5,
+            all_states_inactive: "no",
+            all_states_zoomable: "no",
+
+            //Location defaults
+            location_description: "Location description",
+            location_url: "",
+            location_color: "#FF0067",
+            location_opacity: 0.8,
+            location_hover_opacity: 1,
+            location_size: 25,
+            location_type: "square",
+            location_image_source: "frog.png",
+            location_border_color: "#FFFFFF",
+            location_border: 2,
+            location_hover_border: 2.5,
+            all_locations_inactive: "no",
+            all_locations_hidden: "no",
+
+            //Label defaults
+            label_color: "#d5ddec",
+            label_hover_color: "#d5ddec",
+            label_size: 22,
+            label_font: "Arial",
+            hide_labels: "no",
+            hide_eastern_labels: "no",
+
+            //Zoom settings
+            zoom: "yes",
+            manual_zoom: "yes",
+            back_image: "no",
+            initial_back: "no",
+            initial_zoom: "-1",
+            initial_zoom_solo: "no",
+            region_opacity: 1,
+            region_hover_opacity: 0.6,
+            zoom_out_incrementally: "yes",
+            zoom_percentage: 0.99,
+            zoom_time: 0.5,
+
+            //Popup settings
+            popup_color: "white",
+            popup_opacity: 0.9,
+            popup_shadow: 1,
+            popup_corners: 5,
+            popup_font: "12px/1.5 Verdana, Arial, Helvetica, sans-serif",
+            popup_nocss: "no",
+
+            //Advanced settings
+            div: "map",
+            auto_load: "yes",
+            url_new_tab: "no",
+            images_directory: "default",
+            fade_time: 0.1,
+            link_text: "View Website"
+        },
+        state_specific: {
+            IDN1136: {
+                name: "Nanggro Aceh Darussalam"
+            },
+            IDN1185: {
+                name: "Kalimantan Timur"
+            },
+            IDN1223: {
+                name: "Jawa Barat"
+            },
+            IDN1224: {
+                name: "Jawa Tengah"
+            },
+            IDN1225: {
+                name: "Bengkulu"
+            },
+            IDN1226: {
+                name: "Banten"
+            },
+            IDN1227: {
+                name: "DKI JAKARTA"
+            },
+            IDN1228: {
+                name: "Kalimantan Barat"
+            },
+            IDN1229: {
+                name: "Lampung"
+            },
+            IDN1230: {
+                name: "Sumatera Selatan"
+            },
+            IDN1231: {
+                name: "KEPULAUAN BANGKA BELITUNG"
+            },
+            IDN1232: {
+                name: "Bali"
+            },
+            IDN1233: {
+                name: "Jawa Timur"
+            },
+            IDN1234: {
+                name: "Kalimantan Selatan"
+            },
+            IDN1235: {
+                name: "Nusa Tenggara Timur"
+            },
+            IDN1236: {
+                name: "Sulawesi Selatan"
+            },
+            IDN1237: {
+                name: "Sulawesi Barat"
+            },
+            IDN1796: {
+                name: "Kepulauan Riau"
+            },
+            IDN1837: {
+                name: "Gorontalo"
+            },
+            IDN1930: {
+                name: "Jambi"
+            },
+            IDN1931: {
+                name: "Kalimantan Tengah"
+            },
+            IDN1933: {
+                name: "Irian Jaya Barat"
+            },
+            IDN381: {
+                name: "Sumatera Utara"
+            },
+            IDN492: {
+                name: "Riau"
+            },
+            IDN513: {
+                name: "Sulawesi Utara"
+            },
+            IDN538: {
+                name: "Maluku Utara"
+            },
+            IDN539: {
+                name: "Sumatera Barat"
+            },
+            IDN540: {
+                name: "D I YOGYAKARTA "
+            },
+            IDN554: {
+                name: "Maluku"
+            },
+            IDN555: {
+                name: "Nusa Tenggara Barat"
+            },
+            IDN556: {
+                name: "Sulawesi Tenggara"
+            },
+            IDN557: {
+                name: "Sulawesi Tengah"
+            },
+            IDN558: {
+                name: "Papua"
+            }
+        }
+    };
+    // var data = {{data_rules_tahun|safe}};
+
+    // console.log(data);
+
+    // $(document).ready( function () {
+    //     $('#table-nasional').DataTable( {
+    //         data: data,
+    //         columns: [
+    //         { data: 'Tahun' },
+    //         { data: 'Rules' }
+    //         ]
+    //     } );
+    //     // $('#table-nasional').DataTable();
+    // } );
+
+    $(function () {
+        var raw = {{raw_data | safe}};
+        var graph_kabupaten = {{kabupaten_data | safe}};
+        var graph_bulan = {{bulan_data | safe}};
+        var graph_tahun = {{tahun_data | safe}};
+        var graph_act1 = {{act1_data | safe}};
+        var graph_act2 = {{act2_data | safe}};
+        var graph_weap1 = {{weap1_data | safe}};
+        var graph_weap2 = {{weap2_data | safe}};
+        var graph_jenisKek = {{jenisKek_data | safe}};
+        var graph_katKek = {{katKek_data | safe}};
+        var graph_benKek = {{benKek_data | safe}};
+        var graph_metaKek = {{metaKek_data | safe}};
+
+        var kabPlot = Plotly.newPlot('kabupatenDiv', graph_kabupaten, {});
+        var bulPlot = Plotly.newPlot('bulanDiv', graph_bulan, {});
+        var tahPlot = Plotly.newPlot('tahunDiv', graph_tahun, {});
+        var act1Plot = Plotly.newPlot('act1Div', graph_act1, {});
+        var act2Plot = Plotly.newPlot('act2Div', graph_act2, {});
+        var weap1Plot = Plotly.newPlot('weap1Div', graph_weap1, {});
+        var weap2Plot = Plotly.newPlot('weap2Div', graph_weap2, {});
+        var jenisKekPlot = Plotly.newPlot('jenisKekDiv', graph_jenisKek, {});
+        var katKekPlot = Plotly.newPlot('katKekDiv', graph_katKek, {});
+        var benKekPlot = Plotly.newPlot('benKekDiv', graph_benKek, {});
+        var metaKekPlot =  Plotly.newPlot('metaKekDiv', graph_metaKek, {});
+
+        simplemaps_countrymap.hooks.click_state = function (id) {
+          name = simplemaps_countrymap_mapdata.state_specific[id].name.toLowerCase().replace(/ /g, '', -1);
+          $('#modal-' + name).modal('show');
+      }
+
+  });
+
+</script>
+<script type="text/javascript" src="{{ url_for('static', filename='scripts/countrymap.js') }}"></script>
+</body>
+</html>

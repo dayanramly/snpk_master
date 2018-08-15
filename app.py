@@ -118,7 +118,7 @@ def selected_files():
 		'url_path': request.args.getlist('filename')
 	}
 
-	# data = json.dumps(data)
+	data = json.dumps(data)
 
 	return render_template('selection.html', rows=data)
 
@@ -436,6 +436,7 @@ def show_selection():
 
 		#mengambil nama column dengan prefix dim ke dalam dataframe snpkframe31
 		snpkframe31 = snpkframe3.loc[:, snpkframe3.columns.to_series().str.contains('dim').tolist()]
+		trans_total = len(snpkframe31.index)
 
 		# json_before_fpgrowth = snpkframe31.to_json(orient='split')
 
@@ -446,7 +447,7 @@ def show_selection():
 		patterns = pyfpgrowth.find_frequent_patterns(convMatrix, min_sup)
 
 		# mencari rules dari pattern yang telah dibuat
-		rules = pyfpgrowth.generate_association_rules(patterns, min_conf)
+		rules = pyfpgrowth.generate_association_rules(patterns, min_conf, trans_total)
 		
 		timer = (time.time() - start_time)
 		#jika terdapat rules yang di generate
@@ -620,12 +621,17 @@ def show_selection():
 			df_values = pd.DataFrame(dim2_list)
 			df_values.rename(columns={0: 'first'}, inplace=True)
 			df_values.rename(columns={1: 'confident'}, inplace=True)
+			df_values.rename(columns={2:'liftratio'}, inplace=True)
+
 			# menghapus karakter yang tidak diperlukan
 			df_values['first'] = df_values['first'].astype(str).str.strip('()')
 			df_values_key = df_values['first'].str.split(',', expand=True)
 			df_values_key = df_values_key.replace('', "None")
 
 			df_values_conf = df_values['confident']
+			df_values_lift = df_values['liftratio']
+			lift_max = (df_values_lift.max()).round(4)
+			lift_min = (df_values_lift.min()).round(4)
 			df_values_key = df_values_key.apply(lambda x: x.str.strip("'")).apply(lambda x: x.str.strip(" '"))
 
 			total_columns_value = len(df_values_key.columns)
@@ -648,7 +654,7 @@ def show_selection():
 				arr_katkek = []
 				arr_benkek = []
 				arr_metkek = []
-			#     print index, row
+
 				for each_col in row:
 					if (each_col != None):
 						splitCol = each_col.split("-")
@@ -789,7 +795,7 @@ def show_selection():
 			df_values_conf = (df_values_conf*100).round(2)
 
 			# Merge descriptive rules
-			result_join_decode = pd.concat([df_key_decode, df_values_decode, df_values_conf], axis=1, join_axes=[df_key.index])
+			result_join_decode = pd.concat([df_key_decode, df_values_decode, df_values_conf, df_values_lift], axis=1, join_axes=[df_key.index])
 			result_join_decode['Result']=result_join_decode['confident'].astype(str)+'% Kekerasan terjadi '+result_join_decode['List']+' '+result_join_decode['ListValues']
 
 			# join two column with has same value
@@ -1368,7 +1374,7 @@ def show_selection():
 
 			# dataframe for map
 			result_join_decode['ResultLoc'] = result_join_decode.apply(check_loc, axis=1)
-			result_join_print = result_join_decode[['Result', 'ResultLoc']]
+			result_join_print = result_join_decode[['Result', 'ResultLoc', 'liftratio']]
 
 			html_filter_result = result_join_print.groupby(['ResultLoc'])
 
@@ -1404,6 +1410,8 @@ def show_selection():
 			katKekJSON = {}
 			benKekJSON = {}
 			metaKekJSON = {}
+			lift_max = {}
+			lift_min = {}
 			data_rules_tahun = []
 			data_rules_bulan = []
 			data_rules_kab = []
@@ -1663,6 +1671,7 @@ def show_selection():
 			snpkframe3["dim" + str(index + 1)] = eval(x)
 
 		snpkframe31 = snpkframe3.loc[:, snpkframe3.columns.to_series().str.contains('dim').tolist()]
+		trans_total = len(snpkframe31.index)
 
 		# json_before_fpgrowth = snpkframe31.to_json(orient='split')
 
@@ -1673,7 +1682,7 @@ def show_selection():
 		patterns = pyfpgrowth.find_frequent_patterns(convMatrix, min_sup)
 
 		# mencari rules dari pattern yang telah dibuat
-		rules = pyfpgrowth.generate_association_rules(patterns, min_conf)
+		rules = pyfpgrowth.generate_association_rules(patterns, min_conf, trans_total)
 		timer = (time.time() - start_time)
 
 		if rules:
@@ -1688,19 +1697,23 @@ def show_selection():
 			df_values = pd.DataFrame(dim2_list)
 			df_values.rename(columns={0: 'first'}, inplace=True)
 			df_values.rename(columns={1: 'confident'}, inplace=True)
+			df_values.rename(columns={2: 'liftratio'}, inplace=True)
 
 			df_values['first'] = df_values['first'].astype(str).str.strip('()')
 			df_values_key = df_values['first'].str.split(',', expand=True)
 			df_values_key = df_values_key.replace('', "None")
 
 			df_values_conf = df_values['confident']
+			df_values_lift = df_values['liftratio']
+			lift_max = (df_values_lift.max()).round(4)
+			lift_min = (df_values_lift.min()).round(4)
 			df_values_key = df_values_key.apply(lambda x: x.str.strip("'")).apply(lambda x: x.str.strip(" '"))
 
 			total_columns_value = len(df_values_key.columns)
 			new_cols = ['values' + str(i) for i in df_values_key.columns]
 			df_values_key.columns = new_cols[:total_columns_value]
 
-			result_join = pd.concat([df_key, df_values_key, df_values_conf], axis=1, join_axes=[df_key.index])
+			result_join = pd.concat([df_key, df_values_key, df_values_conf, df_values_lift], axis=1, join_axes=[df_key.index])
 
 			def f(row):
 				for col in row.index:
@@ -1748,6 +1761,8 @@ def show_selection():
 			katKekJSON = {}
 			benKekJSON = {}
 			metaKekJSON = {}
+			lift_max = {}
+			lift_min = {}
 			data_rules_tahun = []
 			data_rules_bulan = []
 			data_rules_kab = []
@@ -1771,6 +1786,8 @@ def show_selection():
 			katKekJSON = {}
 			benKekJSON = {}
 			metaKekJSON = {}
+			lift_max = {}
+			lift_min = {}
 			data_rules_tahun = []
 			data_rules_bulan = []
 			data_rules_kab = []
@@ -1789,7 +1806,7 @@ def show_selection():
 
 	# data_html = result_join.to_html(classes="table table-data")
 	# data_html = data_html.replace('NaN', '')
-	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, metaKek_data=metaKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek, data_rules_metaKek = data_rules_metaKek )
+	return render_template('show_selection.html', data=print_html, converted_data=converted_data, raw_data = out_filter_result, time_exe = timer, total_rules = total_rules, lift_max = lift_max, lift_min = lift_min, kabupaten_data=kabJSON, bulan_data=blnJSON, tahun_data=tahunJSON, act1_data=act1JSON, act2_data=act2JSON, weap1_data=weap1JSON, weap2_data=weap2JSON, jenisKek_data=jenisKekJSON, katKek_data=katKekJSON, benKek_data=benKekJSON, metaKek_data=metaKekJSON, data_rules_tahun = data_rules_tahun, data_rules_bulan = data_rules_bulan, data_rules_kab = data_rules_kab, data_rules_act1 = data_rules_act1, data_rules_act2 = data_rules_act2, data_rules_weap1 = data_rules_weap1, data_rules_weap2 = data_rules_weap2, data_rules_jenisKek = data_rules_jenisKek, data_rules_katKek = data_rules_katKek, data_rules_benKek = data_rules_benKek, data_rules_metaKek = data_rules_metaKek )
 
 @app.route('/selection')
 def load_selection():
