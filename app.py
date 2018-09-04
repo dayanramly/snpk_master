@@ -20,7 +20,7 @@ import time
 import math
 
 from util import translate_bulan, translate_actor, translate_weapon, translate_jenis_kek, translate_tipe_kekerasan, \
-	translate_bentuk_kekerasan
+	translate_bentuk_kekerasan, translate_dampak
 
 app = Flask('snpk', template_folder='templates')
 app.config['UPLOAD_FOLDER'] = 'uploadfiles'
@@ -157,13 +157,14 @@ def show_selection():
 			['area', 'tanggal_kejadian', 'quarter', 'idkejadian', 'kodebpsprop', 'kodebpskab', 'kodebpskec1', 'kecamatan1',
 			 'kodebpskec2', 'kecamatan2', 'desa1', 'desa2', 'desa3', 'actor_s1_tp_o', 'actor_s1_tot', 'actor_s2_tp_o',
 			 'actor_s2_tot', 'int1', 'int2', 'int1_res', 'int2_res', 'int1_o', 'int2_o', 'int1_res_o', 'int2_res_o',
-			 'build_dmg_total', 'bdg_des', 'oth_impact', 'weapon_oth', 'isu_indv', 'tp_kek1_o', 'ben_kek1_o', 'ben_kek2',
+			 'build_dmg_total', 'oth_impact', 'weapon_oth', 'isu_indv',  'tp_kek1_o', 'ben_kek1_o', 'ben_kek2',
 			 'ben_kek2_o', 'insd_desc', 'full_coverage', 's1', 's2', 's3', 's4', 's5', 's6', 's7', 's8', 'weapon',
 			 'wpnfarm', 'wpnfarmman', 'wpnfarmhmde', 'wpnexpl', 'wpnshrp', 'wpnblunt', 'wpnfire', 'intervention',
 			 'intvnrsecforfrml', 'intvnrtni', 'intvnrpol', 'intvnrbrimob', 'intvnrcvln', 'intvntnressucces',
 			 'intvntnviolup', 'actcountrelormas', 'actcountparpol', 'actcountseprtst', 'actcountgov', 'actcountstudents',
 			 'secvssec', 'onewayformconf', 'twowayformconf', 'death1', 'death3', 'death5', 'death10', 'largeinc',
-			 'evperiod', 'pevperiod', 'preevperiod', 'ev2period', 'pev2period', 'create', 'last_update'], axis=1)
+			 'evperiod', 'pevperiod', 'preevperiod', 'ev2period', 'pev2period', 'create', 'last_update', 'meta_tp_kek1_new', 
+			 'build_dmg_total', 'kil_total', 'inj_total', 'kidnap_tot', 'sex_as_tot'], axis=1)
 
 		#data yang diambil hanya data kekerasan terhadap perempuan (EKSTRAKSI DATA)
 		snpkframe = snpkframe.loc[(snpkframe["kil_f"] > 0) | (snpkframe["inj_f"] > 0) | (snpkframe["kid_f"] > 0) | (snpkframe["sex_f"] > 0)]
@@ -179,6 +180,22 @@ def show_selection():
 		snpkframe["inj_f"] = snpkframe["inj_f"].apply(clean_dampak)
 		snpkframe["kid_f"] = snpkframe["kid_f"].apply(clean_dampak)
 		snpkframe["sex_f"] = snpkframe["sex_f"].apply(clean_dampak)
+
+		#konversi ke kode dimensi
+		snpkframe.loc[snpkframe['kil_f'] > 0, 'kil_f'] = "kil_f"
+		snpkframe.loc[snpkframe['inj_f'] > 0, 'inj_f'] = "inj_f"
+		snpkframe.loc[snpkframe['kid_f'] > 0, 'kid_f'] = "kid_f"
+		snpkframe.loc[snpkframe['sex_f'] > 0, 'sex_f'] = "sex_f"
+		snpkframe.loc[snpkframe['bdg_des'] > 0, 'bdg_des'] = "bdg_des"
+
+		#mengganti kode 'tidak ada'
+		snpkframe["actor_s1_tp"] = snpkframe["actor_s1_tp"].replace(2, 1)
+		snpkframe["actor_s2_tp"] = snpkframe["actor_s2_tp"].replace(2, 1)
+		snpkframe["weapon_1"] = snpkframe["weapon_1"].replace(3, 1)
+		snpkframe["weapon_2"] = snpkframe["weapon_2"].replace(3, 1)
+		snpkframe["jenis_kek"] = snpkframe["jenis_kek"].replace(2, 1)
+		snpkframe["ben_kek1"] = snpkframe["ben_kek1"].replace(0, 1)
+		snpkframe["ben_kek1"] = snpkframe["ben_kek1"].replace(2, 1)
 
 		#initiate new array
 		con = []
@@ -254,43 +271,14 @@ def show_selection():
 
 		# kondisi dimensi 4
 		if dimensi4_key:
-			if dimensi4_key == 'dampak-all':
+			if dimensi4_key == 'dampak-f':
 				if dimensi4 != 'all':
 					con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
+					con_dimensi.append('"'+ dimensi4 + '"')
 					con_dimensi_enc.append('"4-" + snpkframe3["' + dimensi4 + '"].astype(str)')
-					con_dimensi.append('"' + dimensi4 + '"')
-				else:
-					con.append('(snpkframe2["kil_total"].notnull())')
-					con.append('(snpkframe2["inj_total"].notnull())')
-					con.append('(snpkframe2["kidnap_tot"].notnull())')
-					con.append('(snpkframe2["sex_as_tot"].notnull())')
-					con_dimensi.append('"kil_total"')
-					con_dimensi.append('"inj_total"')
-					con_dimensi.append('"kidnap_tot"')
-					con_dimensi.append('"sex_as_tot"')
-					con_dimensi_enc.append(
-						'"4-" + snpkframe3["kil_total"].astype(str) + "-" + snpkframe3["inj_total"].astype(str)+ "-" + snpkframe3["kidnap_tot"].astype(str) + "-" + snpkframe3["sex_as_tot"].astype(str)')
-
-			elif dimensi4_key == 'dampak-f':
-				if dimensi4 != 'all':
-					con.append('(snpkframe2["' + dimensi4 + '"] > 0)')
-					con_dimensi.append('"' + dimensi4 + '"')
-					con_dimensi_enc.append('"4-" + snpkframe3["' + dimensi4 + '"].astype(str)')
-				else:
-					con.append('(snpkframe2["kil_f"].notnull())')
-					con.append('(snpkframe2["inj_f"].notnull())')
-					con.append('(snpkframe2["kid_f"].notnull())')
-					con.append('(snpkframe2["sex_f"].notnull())')
-					con_dimensi.append('"kil_f"')
-					con_dimensi.append('"inj_f"')
-					con_dimensi.append('"kid_f"')
-					con_dimensi.append('"sex_f"')
-					con_dimensi_enc.append(
-						'"4-" + snpkframe3["kil_f"].astype(str) + "-" + snpkframe3["inj_f"].astype(str)+ "-" + snpkframe3["kid_f"].astype(str) + "-" + snpkframe3["sex_f"].astype(str)')
 			else:
-				con_dimensi.append('"kil_total","kil_f","inj_total","inj_f","kidnap_tot","kid_f","sex_as_tot","sex_f"')
-				con_dimensi_enc.append(
-					'"4-" + snpkframe3["kil_total"].astype(str) + "-" + snpkframe3["kil_f"].astype(str)+ "-" + snpkframe3["inj_total"].astype(str)+ "-" + snpkframe3["inj_f"].astype(str) + "-" + snpkframe3["kidnap_tot"].astype(str) + "-" + snpkframe3["kid_f"].astype(str) + "-" + snpkframe3["sex_as_tot"].astype(str) + "-" + snpkframe3["sex_f"].astype(str)')
+				con_dimensi.append('"kil_f","inj_f","kid_f","sex_f","bdg_des"')
+				con_dimensi_enc.append('"4-" + snpkframe3["kil_f"].astype(str)+ "-" + snpkframe3["inj_f"].astype(str) + "-" + snpkframe3["kid_f"].astype(str) + "-" + snpkframe3["sex_f"].astype(str) + "-" + snpkframe3["bdg_des"].astype(str)')
 
 		# kondisi dimensi 5
 		if dimensi5_key:
@@ -323,6 +311,7 @@ def show_selection():
 					con.append('(snpkframe2["jenis_kek"].notnull())')
 			con_dimensi.append('"jenis_kek"')
 			con_dimensi_enc.append('"6-" + snpkframe3["jenis_kek"].astype(str)')
+
 		# kondisi dimensi 7
 		if dimensi7_key:
 			if dimensi7_key == 'tp_kek_new':
@@ -450,6 +439,7 @@ def show_selection():
 				arr_kab = []
 				arr_act1 = []
 				arr_act2 = []
+				arr_vict = []
 				arr_weap1 = []
 				arr_weap2 = []
 				arr_jkek = []
@@ -471,7 +461,8 @@ def show_selection():
 								arr.append("dengan aktor " + translate_actor(int(splitCol[1])))
 								arr_act1.append(translate_actor(int(splitCol[1])))
 							elif splitCol[0] == '4':
-								arr.append("terdapat korban terbunuh, luka-luka, penculikan, pelecehan seksual atau bangunan rusak")
+								arr.append("terdapat korban " + translate_dampak(splitCol[1]))
+								arr_vict.append(translate_dampak(splitCol[1]))
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata " + translate_weapon(int(splitCol[1])))
 								arr_weap1.append(translate_actor(int(splitCol[1])))
@@ -500,42 +491,28 @@ def show_selection():
 								arr.append("dan aktor 2 " + translate_actor(int(splitCol[2])))
 								arr_act1.append(translate_actor(int(splitCol[1])))
 								arr_act2.append(translate_actor(int(splitCol[2])))
-							elif splitCol[0] == '4':
-								arr.append("dengan dampak " + splitCol[1])
-								arr.append("dan dampak " + splitCol[2])
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata 1 " + translate_weapon(int(splitCol[1])))
 								arr.append("dan senjata 2 " + translate_weapon(int(splitCol[2])))
 								arr_weap1.append(translate_weapon(int(splitCol[1])))
 								arr_weap2.append(translate_weapon(int(splitCol[2])))
-						elif len(splitCol) == 4:
+						elif len(splitCol) == 6:
 							arr.append("terdapat korban")
-							if splitCol[1] == '1':
-								arr.append("terbunuh,")        
-							elif splitCol[2] == '1':
-								arr.append("luka-luka,")
-							elif splitCol[3] == '1':
-								arr.append("penculikan,")
-							elif splitCol[4] == '1':
-								arr.append("pelecehan seksual,")
-						elif len(splitCol) == 9:
-							arr.append("terdapat korban")
-							if splitCol[1] == '1':
-								arr.append("terbunuh,")        
-							if splitCol[2] == '1':
-								arr.append("luka-luka,")
-							if splitCol[3] == '1':
-								arr.append("penculikan,")
-							if splitCol[4] == '1':
-								arr.append("pelecehan seksual,")
-							if splitCol[5] == '1':
-								arr.append("terbunuh berjenis kelamin perempuan,")        
-							if splitCol[6] == '1':
-								arr.append("luka-luka berjenis kelamin perempuan,")
-							if splitCol[7] == '1':
-								arr.append("penculikan berjenis kelamin perempuan,")
-							if splitCol[8] == '1':
-								arr.append("pelecehan seksual berjenis kelamin perempuan,")
+							if splitCol[1] != '0':
+								arr.append("terbunuh ")  
+								arr_vict.append(translate_dampak(splitCol[1]))
+							elif splitCol[2] != '0':
+								arr.append("luka-luka ")
+								arr_vict.append(translate_dampak(splitCol[2]))
+							elif splitCol[3] != '0':
+								arr.append("penculikan ")
+								arr_vict.append(translate_dampak(splitCol[3]))
+							elif splitCol[4] != '0':
+								arr.append("pelecehan seksual ")
+								arr_vict.append(translate_dampak(splitCol[4]))
+							elif splitCol[5] != '0':
+								arr.append("bangunan rusak ")
+								arr_vict.append(translate_dampak(splitCol[5]))
 								
 				combine_arr = ' '.join(arr)
 			#     print combine_arr
@@ -561,6 +538,10 @@ def show_selection():
 					df_key_decode.loc[index,'List_act2'] = ' '.join(arr_act2)
 				else:
 					df_key_decode.loc[index,'List_act2'] = np.nan
+				if arr_vict:
+					df_key_decode.loc[index,'List_dampak'] = ' '.join(arr_vict)
+				else:
+					df_key_decode.loc[index,'List_dampak'] = np.nan
 				if arr_weap1: 
 					df_key_decode.loc[index,'List_weap1'] = ' '.join(arr_weap1)
 				else:
@@ -622,6 +603,7 @@ def show_selection():
 				arr_kab = []
 				arr_act1 = []
 				arr_act2 = []
+				arr_vict = []
 				arr_weap1 = []
 				arr_weap2 = []
 				arr_jkek = []
@@ -643,7 +625,8 @@ def show_selection():
 								arr.append("dengan aktor " + translate_actor(int(splitCol[1])))
 								arr_act1.append(translate_actor(int(splitCol[1])))
 							elif splitCol[0] == '4':
-								arr.append("terdapat korban terbunuh, luka-luka, penculikan, pelecehan seksual atau bangunan rusak")
+								arr.append("terdapat korban " + translate_dampak(splitCol[1]))
+								arr_vict.append(translate_dampak(splitCol[1]))
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata " + translate_weapon(int(splitCol[1])))
 								arr_weap1.append(translate_actor(int(splitCol[1])))
@@ -672,42 +655,28 @@ def show_selection():
 								arr.append("dan aktor 2 " + translate_actor(int(splitCol[2])))
 								arr_act1.append(translate_actor(int(splitCol[1])))
 								arr_act2.append(translate_actor(int(splitCol[2])))
-							elif splitCol[0] == '4':
-								arr.append("dengan dampak " + splitCol[1])
-								arr.append("dan dampak " + splitCol[2])
 							elif splitCol[0] == '5':
 								arr.append("dengan senjata 1 " + translate_weapon(int(splitCol[1])))
 								arr.append("dan senjata 2 " + translate_weapon(int(splitCol[2])))
 								arr_weap1.append(translate_weapon(int(splitCol[1])))
 								arr_weap2.append(translate_weapon(int(splitCol[2])))
-						elif len(splitCol) == 5:
+						elif len(splitCol) == 6:
 							arr.append("terdapat korban")
-							if splitCol[1] == '1':
-								arr.append("terbunuh,")        
-							elif splitCol[2] == '1':
-								arr.append("luka-luka,")
-							elif splitCol[3] == '1':
-								arr.append("penculikan,")
-							elif splitCol[4] == '1':
-								arr.append("pelecehan seksual,")
-						elif len(splitCol) == 9:
-							arr.append("terdapat korban")
-							if splitCol[1] == '1':
-								arr.append("terbunuh,")        
-							if splitCol[2] == '1':
-								arr.append("luka-luka,")
-							if splitCol[3] == '1':
-								arr.append("penculikan,")
-							if splitCol[4] == '1':
-								arr.append("pelecehan seksual,")
-							if splitCol[5] == '1':
-								arr.append("terbunuh berjenis kelamin perempuan,")        
-							if splitCol[6] == '1':
-								arr.append("luka-luka berjenis kelamin perempuan,")
-							if splitCol[7] == '1':
-								arr.append("penculikan berjenis kelamin perempuan,")
-							if splitCol[8] == '1':
-								arr.append("pelecehan seksual berjenis kelamin perempuan,")
+							if splitCol[1] != '0':
+								arr.append("terbunuh ")  
+								arr_vict.append(translate_dampak(splitCol[1]))
+							elif splitCol[2] != '0':
+								arr.append("luka-luka ")
+								arr_vict.append(translate_dampak(splitCol[2]))
+							elif splitCol[3] != '0':
+								arr.append("penculikan ")
+								arr_vict.append(translate_dampak(splitCol[3]))
+							elif splitCol[4] != '0':
+								arr.append("pelecehan seksual ")
+								arr_vict.append(translate_dampak(splitCol[4]))
+							elif splitCol[5] != '0':
+								arr.append("bangunan rusak ")
+								arr_vict.append(translate_dampak(splitCol[5]))
 								
 				combine_arr = ' '.join(arr)
 			#     print combine_arr
@@ -733,6 +702,10 @@ def show_selection():
 					df_values_decode.loc[index,'act2'] = ' '.join(arr_act2)
 				else:
 					df_values_decode.loc[index,'act2'] = np.nan
+				if arr_vict:
+					df_values_decode.loc[index,'dampak'] = ' '.join(arr_vict)
+				else:
+					df_values_decode.loc[index,'dampak'] = np.nan
 				if arr_weap1: 
 					df_values_decode.loc[index,'weap1'] = ' '.join(arr_weap1)
 				else:
@@ -822,6 +795,14 @@ def show_selection():
 					return row.act2
 				else:
 					return np.nan
+
+			def check_dampak(row):
+				if (isinstance(row.List_dampak, str)) & (isinstance(row.dampak, float)):
+					return row.List_dampak
+				elif (isinstance(row.dampak, str)) & (isinstance(row.List_dampak, float)):
+					return row.dampak
+				else:
+					return np.nan
 				
 			def check_weap1(row):
 				if (isinstance(row.List_weap1, str)) & (isinstance(row.weap1, float)):
@@ -876,6 +857,8 @@ def show_selection():
 				result_join_decode['ResultActor1'] = result_join_decode.apply(check_act1, axis=1)
 			if 'List_act2' in result_join_decode.columns:
 				result_join_decode['ResultActor2'] = result_join_decode.apply(check_act2, axis=1)
+			if 'List_dampak' in result_join_decode.columns:
+				result_join_decode['ResultDampak'] = result_join_decode.apply(check_dampak, axis=1)
 			if 'List_weap1' in result_join_decode.columns:
 				result_join_decode['ResultWeap1'] = result_join_decode.apply(check_weap1, axis=1)
 			if 'List_weap2' in result_join_decode.columns:
